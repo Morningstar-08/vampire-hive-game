@@ -15,24 +15,8 @@ export default function Home() {
   const closeModal = () => setModalOpen(false);
 
   return (
-    // <div className="container mx-auto p-4">
-    //   <h1 className="text-4xl font-bold mb-4">Turn Me Into Vampire</h1>
-    //   {!user ? (
-    //     <>
-    //       <button
-    //         onClick={openModal}
-    //         className="bg-blue-500 px-4 py-2 rounded text-white"
-    //       >
-    //         Login with Hive Keychain
-    //       </button>
-    //       <Modal isOpen={isModalOpen} onClose={closeModal} onSubmit={login} />
-    //     </>
-    //   ) : (
-    //     <p className="text-xl">Welcome, @{user}!</p>
-    //   )}
-    // </div>
     <div>
-      <Navbar />
+      <Navbar openModal={openModal} />
       <div
         className="bg-cover bg-center min-h-screen relative"
         style={{ backgroundImage: "url('/background.jpg')" }}

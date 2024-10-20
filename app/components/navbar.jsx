@@ -1,15 +1,10 @@
 import Link from "next/link";
 import { useState } from "react";
 import { FiChevronDown } from "react-icons/fi";
-import Modal from "./Modal";
 import { useAuth } from "../providers/AuthProvider";
 
-export default function Navbar() {
+export default function Navbar(props) {
   const { user, login } = useAuth();
-  const [isModalOpen, setModalOpen] = useState(false);
-
-  const openModal = () => setModalOpen(true);
-  const closeModal = () => setModalOpen(false);
 
   const [isOpen, setIsOpen] = useState(false);
   const toggleDropdown = () => setIsOpen(!isOpen);
@@ -68,12 +63,11 @@ export default function Navbar() {
           </a>
         </li>
         <li>
-          <Link href="" className="nav-link" onClick={openModal}>
-            Login / Sign Up
-          </Link>
+          <button className="nav-link" onClick={props.openModal}>
+              Login / Sign Up
+          </button>
         </li>
       </ul>
-      <Modal isOpen={isModalOpen} onClose={closeModal} onSubmit={login} />
 
       {/* Glow effect styles */}
       <style jsx>{`
