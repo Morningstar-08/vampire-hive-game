@@ -1,14 +1,20 @@
-import Link from 'next/link';
-import { useState } from 'react';
-import { FiChevronDown } from 'react-icons/fi'; // Down arrow icon
+import Link from "next/link";
+import { useState } from "react";
+import { FiChevronDown } from "react-icons/fi";
+import Modal from "./Modal";
+import { useAuth } from "../providers/AuthProvider";
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
+  const { user, login } = useAuth();
+  const [isModalOpen, setModalOpen] = useState(false);
 
+  const openModal = () => setModalOpen(true);
+  const closeModal = () => setModalOpen(false);
+
+  const [isOpen, setIsOpen] = useState(false);
   const toggleDropdown = () => setIsOpen(!isOpen);
-  
   const handleOptionClick = () => {
-    setIsOpen(false); // Close the dropdown when an option is clicked
+    setIsOpen(false);
   };
 
   return (
@@ -22,26 +28,37 @@ export default function Navbar() {
         />
         {/* Conditionally render the title based on mobile dropdown state */}
         {/* This should hide the title when the dropdown is open */}
-        <span className={`text-white text-2xl ${isOpen ? 'hidden' : ''}`}>
+        <span className={`text-white text-2xl ${isOpen ? "hidden" : ""}`}>
           Vampire Card Game
         </span>
       </div>
 
       {/* Dropdown Arrow for Mobile */}
-      <button className="dropdown-toggle md:hidden flex items-center" onClick={toggleDropdown}>
+      <button
+        className="dropdown-toggle md:hidden flex items-center"
+        onClick={toggleDropdown}
+      >
         <span className="text-white mr-2">Menu</span>
-        <FiChevronDown className={`text-white text-2xl transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <FiChevronDown
+          className={`text-white text-2xl transition-transform ${
+            isOpen ? "rotate-180" : ""
+          }`}
+        />
       </button>
 
       {/* Navigation Links */}
-      <ul className={`nav-links ${isOpen ? 'open' : ''} md:flex gap-5`}>
+      <ul className={`nav-links ${isOpen ? "open" : ""} md:flex gap-5`}>
         <li>
           <Link href="/" className="nav-link" onClick={handleOptionClick}>
             Home
           </Link>
         </li>
         <li>
-          <a href="#how-to-play" className="nav-link" onClick={handleOptionClick}>
+          <a
+            href="#how-to-play"
+            className="nav-link"
+            onClick={handleOptionClick}
+          >
             How to Play
           </a>
         </li>
@@ -51,11 +68,12 @@ export default function Navbar() {
           </a>
         </li>
         <li>
-          <Link href="/login" className="nav-link" onClick={handleOptionClick}>
+          <Link href="" className="nav-link" onClick={openModal}>
             Login / Sign Up
           </Link>
         </li>
       </ul>
+      <Modal isOpen={isModalOpen} onClose={closeModal} onSubmit={login} />
 
       {/* Glow effect styles */}
       <style jsx>{`
