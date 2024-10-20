@@ -2,8 +2,111 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom color variables */
 :root {
-  margin: 0;
-  width: 100%;
-  height: 100%;
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+/* Body styling */
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Text balance utility */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Navbar Styling */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.7); /* Make the background semi-transparent */
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+/* Navbar Links Styling */
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  justify-content: flex-end;
+}
+
+nav ul li {
+  display: inline-block;
+}
+
+nav ul li a {
+  font-size: 1.2rem;
+  color: #e9e0e0;
+  position: relative;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+
+nav ul li a:hover {
+  color: #ff4757;
+  text-shadow: 0px 0px 8px rgba(255, 71, 87, 0.8);
+}
+
+/* Active link styling */
+nav ul li a.active {
+  text-shadow: 0 0 15px rgba(255, 71, 87, 1);
+}
+
+.bg-black\/70 {
+  background-color: rgb(0 0 0 / 0.1);
+}
+
+/* Play Now Button Styling */
+.play-now-button {
+  margin-top: 250px;
+  padding: 12px 32px;
+  background-color: #ff4757;
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(255, 71, 87, 0.4);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.play-now-button:hover {
+  background-color: #c53030;
+  box-shadow: 0 6px 12px rgba(197, 48, 48, 0.6);
+}
+
+/* Footer Styling */
+.footer-section {
+  background-color: #2d2d2d;
+  color: white;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.footer-section a {
+  color: white;
+  margin: 0 15px;
+}
+
+.footer-section a:hover {
+  color: #ff4757;
+  text-shadow: 0px 0px 8px rgba(255, 71, 87, 0.8);
 }
