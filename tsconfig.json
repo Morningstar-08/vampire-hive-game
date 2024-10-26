@@ -27,8 +27,12 @@
     "**/*.tsx",
     "**/*.jsx",
     ".next/types/**/*.ts",
-    "app/api/auth/auth.ts",
-    "app/page.jsx"
+    "pages/api/auth/auth.ts",
+    "app/page.jsx",
+    "app/api/profile/route.js",
+    "app/dashboard/vampire/page.tsx",
+    "app/models/User.js",
+    "app/models/User.js"
   ],
   "exclude": ["node_modules"]
 }

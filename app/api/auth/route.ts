@@ -18,7 +18,7 @@ export async function POST(req: Request) {
 
   if (isSignatureValid) {
     // Step 2: Create a JWT token if the signature is valid
-    const token = jwt.sign({ username }, "JWT_SECRET", {
+    const token = jwt.sign({ username }, process.env.JWT_SECRET as string, {
       expiresIn: "1h",
     });
 
