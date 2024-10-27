@@ -145,17 +145,7 @@ const OpponentCards = () => {
       ];
       const tx = new hiveTx.Transaction();
       await tx.create(operations);
-      // tx.create(operations, 60).then(() =>
-      //   console.log("transaction doneee", tx.Transaction)
-      // );
-      // const privateKey = hiveTx.PrivateKey.from();
-      // const privateKey =
-      //   "STM5cLWWKM6poTWcYVd2totyduUpEUeAC39DUF9a1MhTAfXREat1z";
-      // const privateKey = hiveTx.PrivateKey.from(
-      //   process.env.REACT_APP_HIVE_POSTING_KEY
-      // );
-      // const privateKey = hiveTx.PrivateKey.from(privateKeyString);
-      // const POSTING_KEY = "5JzCxQvDGJxUjypjxKLmz9yS6cgbzwPvNYkpnBffoyZ3qoG3CLa";
+
       const privateKey = hiveTx.PrivateKey.from(
         process.env.NEXT_PUBLIC_HIVE_POSTING_KEY
       );
@@ -169,23 +159,6 @@ const OpponentCards = () => {
         console.error("Transaction failed:", result);
         throw new Error("Transaction failed to broadcast");
       }
-      // console.log(tx.signedTransaction);
-      // tx.broadcast().then((res) => console.log(res));
-      // const result = await tx.broadcast();
-      // if (result && result.result && result.result.block_num) {
-      //   console.log("yayayayayayaay ho gaya meow");
-      //   // return result;
-      //   console.log(result);
-      // } else {
-      //   console.log("oops some error meow");
-      // }
-
-      // const data = await response.json();
-      // if (data.success) {
-      //   console.log("Game result submitted successfully");
-      // } else {
-      //   console.error("Failed to submit game result:", data.message);
-      // }
     } catch (error) {
       console.error("Error submitting game result:", error);
     }
