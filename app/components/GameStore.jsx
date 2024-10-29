@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 
 // Define the base items and special items separately
 const items = [
-  { name: "Bloodlust Surge", cost: 20 }, // reduces attack damage by 3 for next 3 turns
-  { name: "Shadow Veil", cost: 20 }, // Makes the vampire immune to damage for 1 round
+  { name: "Shadow Veil", cost: 20 }, // Makes the vampire immune to damage for 1 round but the enemy does get intended damage  1
+  { name: "Bloodlust Surge", cost: 20 }, // reduces attack damage of enemy by 3 for next 2 turns
   { name: "Life Drain", cost: 200 }, // Steals health from the enemy, restoring 10% health
   { name: "Summon Bats", cost: 80 }, // Distracts the enemy, reducing their chance to hit
   { name: "Crimson Elixir", cost: 100 }, // Restores 30% health

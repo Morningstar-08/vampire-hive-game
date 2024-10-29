@@ -4,7 +4,11 @@ import connectMongo from "../../lib/mongodb";
 import User from "../../models/User";
 import jwt from "jsonwebtoken";
 
-export async function GET(req: Request) {
+// import OpponentCards, { updateWinsLoss } from "@/app/components/OpponentCards";
+
+export async function POST(req: Request) {
+  const { isWin } = await req.json();
+  //   console.log("the game result is", gameResult);
   try {
     // Get the authorization header from the request
     const authHeader = req.headers.get("authorization");
@@ -25,31 +29,25 @@ export async function GET(req: Request) {
     };
 
     const username = decoded.username;
-    console.log(username);
 
-    // Connect to MongoDB and find the user
+    // const { wins, losses } = await req.json();
     await connectMongo();
-    const user = await User.findOne({ username: username });
+    const user = await User.findOne({ username });
 
     if (!user) {
-      const newUser = new User({
-        username: username, // Set the username
-        wins: 0, // Default wins to 0
-        losses: 0, // Default losses to 0
-        inventory: [], // Default empty inventory
-        nftCards: ["baseCard"], // Default empty NFT cards
-      });
-      await newUser.save(); //use insert one
-      // return NextResponse.json({ error: "User not found" }, { status: 404 });
-      return NextResponse.json(newUser);
+      console.log("User not found");
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    return NextResponse.json(user);
-  } catch (error) {
-    console.error("Profile API Error:", error);
-    if (error instanceof jwt.JsonWebTokenError) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    if (isWin) {
+      user.wins = user.wins + 1;
+    } else if (user.losses !== undefined && !isWin) {
+      user.losses = user.losses + 1;
     }
+    await user.save();
+    return NextResponse.json({ message: "User stats updated", user });
+  } catch (error) {
+    console.error("Error updating stats: ", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

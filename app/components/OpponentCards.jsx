@@ -3,6 +3,35 @@ import React, { useEffect, useState } from "react";
 import PlayerCard from "../components/PlayerCard";
 import * as hiveTx from "hive-tx";
 
+// export const updateWinsLoss = async () => {
+//   return gameOver;
+// };
+
+export const submitGameResultToMongo = async (gameOver) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch("/api/userStats", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        isWin: gameOver,
+      }),
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to update stats: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log("Stats updated:", data);
+  } catch (error) {
+    console.error("Error updating game result:", error);
+    throw error;
+  }
+};
+
 const HUMANS = [
   { name: "Normal Human 1", health: 0 },
   { name: "Normal Human 2", health: 0 },
@@ -69,18 +98,24 @@ const OpponentCards = () => {
   const [powerUps, setPowerUps] = useState([]);
   const [nftCardPlayed, setNftCardPlayed] = useState(null); // Add for NFT Card tracking
   const [hiveCoinsStaked, setHiveCoinsStaked] = useState(0); // For Hive coins
+  const [gameStarted, setGameStarted] = useState(false); // Add this state
+
+  useEffect(() => {
+    initializeCards();
+    setGameStarted(true);
+  }, []);
 
   useEffect(() => {
     initializeCards();
   }, []);
 
-  useEffect(() => {
-    if (player.health <= 0) {
-      setGameOver(true);
-      submitGameResult(false); // Player lost
-      alert("Game Over! You lost.");
-    }
-  }, [player.health]);
+  // useEffect(() => {
+  //   if (player.health <= 0) {
+  //     setGameOver(true);
+  //     // submitGameResultToHive(false); // Player lost
+  //     alert("Game Over! You lost.");
+  //   }
+  // }, [player.health]);
 
   const initializeCards = () => {
     const selectedHumans = getRandomElements(HUMANS, 3);
@@ -104,29 +139,9 @@ const OpponentCards = () => {
     console.log("Initial cards:", shuffledCards);
   };
 
-  // Submit the game result
-  const submitGameResult = async (playerWon) => {
-    const nftCard = nftCardPlayed || {
-      id: "default-nft",
-      wins: player.wins,
-      losses: player.losses,
-    };
-    console.log("the nft card77 is: ", nftCard);
-
+  // Submit the game result to hive blockchain
+  const submitGameResultToHive = async () => {
     try {
-      // const response = await fetch("/api/game/end", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({
-      //     username: "VampireKittyMeow", // Replace this with dynamic username from player data
-      //     nftCard,
-      //     hiveStaked: hiveCoinsStaked, // Pass the Hive coins staked
-      //     privateKey: "playerPostingKey", // Assume the key is passed securely
-      //   }),
-      // });
-
       const game = {
         wins: 1,
         losses: 2,
@@ -161,6 +176,33 @@ const OpponentCards = () => {
       }
     } catch (error) {
       console.error("Error submitting game result:", error);
+    }
+  };
+
+  // const handleGameOver = async (gameOver) => {
+  //   await submitGameResultToMongo(gameOver);
+  // };
+
+  const handleGameOver = async (isWin) => {
+    // Only submit game result if the game has actually started and ended
+    if (!gameStarted || gameOver) {
+      return;
+    }
+
+    try {
+      await submitGameResultToMongo(isWin);
+      setPlayer((prev) => ({
+        ...prev,
+        wins: isWin ? (prev.wins || 0) + 1 : prev.wins,
+        losses: !isWin ? (prev.losses || 0) + 1 : prev.losses,
+      }));
+      setGameOver(true); // Set game over after successful submission
+    } catch (error) {
+      console.error("Failed to handle game over:", error);
+      // Only show alert if game was actually played
+      if (gameStarted) {
+        alert("Failed to update game statistics. Please try again.");
+      }
     }
   };
 
@@ -226,8 +268,13 @@ const OpponentCards = () => {
       console.log("Player healed:", card.health, "New health:", newHealth);
       return { ...prev, health: newHealth };
     });
+    const newHumansDefeated = humansDefeated + 1;
+
     setHumansDefeated((prev) => prev + 1);
     setCardsToReplace((prev) => [...prev, index]);
+    if (newHumansDefeated === 3) {
+      handleGameOver(true);
+    }
   };
 
   const handleHomidCard = (card, index) => {
@@ -246,6 +293,10 @@ const OpponentCards = () => {
     setPlayer((prev) => {
       const newHealth = Math.max(0, updatedPlayerHealth);
       console.log("Player took damage:", card.damage, "New health:", newHealth);
+      // Check for game over due to health here
+      if (newHealth <= 0) {
+        handleGameOver(false); // Player lost
+      }
       return { ...prev, health: newHealth };
     });
 
@@ -268,47 +319,41 @@ const OpponentCards = () => {
     setCardsToReplace((prev) => [...prev, index]);
   };
 
-  // const checkGameOver = () => {
-  //   if (humansDefeated === 3) {
-  //     setGameOver(true);
-  //     submitGameResult(true); // Player won
-
-  //     console.log("Game Over: Player won");
-  //     alert("Congratulations! You won!");
-  //   } else if (player.health <= 0) {
-  //     setGameOver(true);
-  //     submitGameResult(false); // Player lost
-  //     console.log("Game Over: Player lost");
-  //     alert("Game Over! You lost.");
-  //   }
-  // };
+  useEffect(() => {
+    if (gameOver !== undefined) {
+      handleGameOver(gameOver);
+    }
+  }, [gameOver]);
 
   const checkGameOver = () => {
     if (humansDefeated === 3) {
       setGameOver(true);
+      handleGameOver(true);
 
       // Increment player's wins by 1
-      setPlayer((prev) => ({
-        ...prev,
-        wins: (prev.wins || 0) + 1, // If wins is not defined, initialize it to 0
-      }));
+      // setPlayer((prev) => ({
+      //   ...prev,
+      //   wins: (prev.wins || 0) + 1, // If wins is not defined, initialize it to 0
+      // }));
 
-      submitGameResult(); // Player won
+      // submitGameResultToHive(true); // Player won
       console.log("Game Over: Player won");
       alert("Congratulations! You won!");
-    } else if (player.health <= 0) {
-      setGameOver(true);
-
-      // Increment player's losses by 1 (Optional)
-      setPlayer((prev) => ({
-        ...prev,
-        losses: (prev.losses || 0) + 1, // If losses is not defined, initialize it to 0
-      }));
-
-      submitGameResult(false); // Player lost
-      console.log("Game Over: Player lost");
-      alert("Game Over! You lost.");
     }
+    // } else if (player.health <= 0) {
+    //   setGameOver(true);
+    //   // handleGameOver(true);
+
+    //   // Increment player's losses by 1 (Optional)
+    //   // setPlayer((prev) => ({
+    //   //   ...prev,
+    //   //   losses: (prev.losses || 0) + 1, // If losses is not defined, initialize it to 0
+    //   // }));
+
+    //   // submitGameResultToHive(false); // Player lost
+    //   console.log("Game Over: Player lost");
+    //   alert("Game Over! You lost.");
+    // }
   };
 
   const handleNextTurn = () => {

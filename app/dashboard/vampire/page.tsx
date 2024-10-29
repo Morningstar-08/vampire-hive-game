@@ -18,6 +18,7 @@ export default function Page() {
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem("token");
+      console.log("this is the tokenn: ", token);
       if (!token) {
         setError("Not authenticated");
         setLoading(false);
