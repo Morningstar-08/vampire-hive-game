@@ -16,25 +16,11 @@ export default function Home() {
   });
   const [powerUps, setPowerUps] = useState([]);
 
-  // const buyItem = (item) => {
-  //   if (drachmas >= item.cost) {
-  //     setDrachmas(drachmas - item.cost);
-  //     setPowerUps([...powerUps, item]);
-  //   }
-  // };
-
   return (
     <div className=" flex items-center h-screen ">
       <div className="p-8 rounded-lg flex space-x-4">
-        {/* Opponent Cards */}
-        <OpponentCards />
-
-        {/* Player Card */}
-        {/* <PlayerCard player={player} powerUps={powerUps} /> */}
-
-        {/* Game Store */}
-        {/* <GameStore drachmas={drachmas} buyItem={buyItem} /> */}
-        <GameStore drachmas={drachmas} />
+        {/* <GameParent /> */}
+        <GameStore />
       </div>
     </div>
   );

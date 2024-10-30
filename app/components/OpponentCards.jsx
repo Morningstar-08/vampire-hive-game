@@ -82,7 +82,17 @@ const Card = ({ details, canFlip, onFlip }) => {
   );
 };
 
-const OpponentCards = () => {
+const OpponentCards = ({ boosterPurchased }) => {
+  console.log("OpponentCards - Received boosterPurchased:", boosterPurchased); // Debug log
+
+  useEffect(() => {
+    console.log("OpponentCards - useEffect triggered with:", boosterPurchased); // Debug log
+
+    if (boosterPurchased === "Shadow Veil") {
+      console.log("Shadow Veil activated: No damage to vampire this round.");
+    }
+  }, [boosterPurchased]);
+
   const [opponentCards, setOpponentCards] = useState([]);
   const [player, setPlayer] = useState({
     health: 100,
@@ -99,6 +109,7 @@ const OpponentCards = () => {
   const [nftCardPlayed, setNftCardPlayed] = useState(null); // Add for NFT Card tracking
   const [hiveCoinsStaked, setHiveCoinsStaked] = useState(0); // For Hive coins
   const [gameStarted, setGameStarted] = useState(false); // Add this state
+  const [hiveCoinsWallet, setHiveCoinsWallet] = useState(100); // available hive coins in user's wallet
 
   useEffect(() => {
     initializeCards();
@@ -121,11 +132,6 @@ const OpponentCards = () => {
     const selectedHumans = getRandomElements(HUMANS, 3);
     const selectedWerewolves = getRandomElements(WEREWOLVES, 4);
     const selectedWitches = getRandomElements(WITCHES, 3);
-
-    // //testing
-    // const selectedHumans = getRandomElements(HUMANS, 10);
-    // const selectedWerewolves = getRandomElements(WEREWOLVES, 0);
-    // const selectedWitches = getRandomElements(WITCHES, 0);
 
     const allCards = [
       ...selectedHumans,
@@ -329,31 +335,9 @@ const OpponentCards = () => {
     if (humansDefeated === 3) {
       setGameOver(true);
       handleGameOver(true);
-
-      // Increment player's wins by 1
-      // setPlayer((prev) => ({
-      //   ...prev,
-      //   wins: (prev.wins || 0) + 1, // If wins is not defined, initialize it to 0
-      // }));
-
-      // submitGameResultToHive(true); // Player won
       console.log("Game Over: Player won");
       alert("Congratulations! You won!");
     }
-    // } else if (player.health <= 0) {
-    //   setGameOver(true);
-    //   // handleGameOver(true);
-
-    //   // Increment player's losses by 1 (Optional)
-    //   // setPlayer((prev) => ({
-    //   //   ...prev,
-    //   //   losses: (prev.losses || 0) + 1, // If losses is not defined, initialize it to 0
-    //   // }));
-
-    //   // submitGameResultToHive(false); // Player lost
-    //   console.log("Game Over: Player lost");
-    //   alert("Game Over! You lost.");
-    // }
   };
 
   const handleNextTurn = () => {
