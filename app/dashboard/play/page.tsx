@@ -19,7 +19,7 @@ export default function Play() {
     return <p>Loading...</p>;
   }
 
-  const [drachmas, setDrachmas] = useState(100);
+  const [drachmas, setDrachmas] = useState(1000);
   const [player, setPlayer] = useState({
     name: "Damon Salvatore",
     health: 100,
@@ -35,13 +35,9 @@ export default function Play() {
       <div className=" flex items-center h-screen ">
         <div className="p-8 rounded-lg flex space-x-4">
           {/* Opponent Cards */}
-          <OpponentCards />
-
-          {/* Player Card */}
-          {/* <PlayerCard player={player} powerUps={powerUps} /> */}
+          {/* <OpponentCards /> */}
 
           {/* Game Store */}
-          {/* <GameStore drachmas={drachmas} buyItem={buyItem} /> */}
           <GameStore drachmas={drachmas} />
         </div>
       </div>

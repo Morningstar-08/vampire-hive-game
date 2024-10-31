@@ -1,11 +1,6 @@
 // "use client";
-import React, { useEffect, useState } from "react";
-import PlayerCard from "../components/PlayerCard";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import * as hiveTx from "hive-tx";
-
-// export const updateWinsLoss = async () => {
-//   return gameOver;
-// };
 
 export const submitGameResultToMongo = async (gameOver) => {
   try {
@@ -35,7 +30,7 @@ export const submitGameResultToMongo = async (gameOver) => {
 const HUMANS = [
   { name: "Normal Human 1", health: 0 },
   { name: "Normal Human 2", health: 0 },
-  { name: "Normal Human 2", health: 0 },
+  { name: "Normal Human 3", health: 0 },
   // { name: "Homid", health: 20 },
 ];
 
@@ -45,6 +40,30 @@ const WEREWOLVES = [
   { name: "Shapeshifter", health: 20, damage: 10, type: "damaging" },
   { name: "Poor Sod", health: 15, damage: 10, type: "damaging" },
   { name: "Primordial Werewolf", health: 40, damage: 15, type: "damaging" },
+];
+
+const werewolves_list = [
+  "The Hybrid",
+  "Lycan",
+  "Shapeshifter",
+  "Poor Sod",
+  "Primordial Werewolf",
+];
+
+const good_list = [
+  "Normal Human 1",
+  "Normal Human 2",
+  "Normal Human 3",
+  "Kitchen Witch",
+  "Hedge Witch",
+];
+
+const witches_list = [
+  "Elemental Witch",
+  "Green Witch",
+  "Cosmic Witch",
+  "Kitchen Witch",
+  "Hedge Witch",
 ];
 
 const WITCHES = [
@@ -60,7 +79,7 @@ const getRandomElements = (array, count) => {
   return shuffled.slice(0, count);
 };
 
-const Card = ({ details, canFlip, onFlip }) => {
+const OpponentCard = ({ details, canFlip, onFlip }) => {
   return (
     <div
       className={`border p-2 rounded h-32 w-24 ${
@@ -83,16 +102,6 @@ const Card = ({ details, canFlip, onFlip }) => {
 };
 
 const OpponentCards = ({ boosterPurchased }) => {
-  console.log("OpponentCards - Received boosterPurchased:", boosterPurchased); // Debug log
-
-  useEffect(() => {
-    console.log("OpponentCards - useEffect triggered with:", boosterPurchased); // Debug log
-
-    if (boosterPurchased === "Shadow Veil") {
-      console.log("Shadow Veil activated: No damage to vampire this round.");
-    }
-  }, [boosterPurchased]);
-
   const [opponentCards, setOpponentCards] = useState([]);
   const [player, setPlayer] = useState({
     health: 100,
@@ -102,14 +111,28 @@ const OpponentCards = ({ boosterPurchased }) => {
   });
   const [humansDefeated, setHumansDefeated] = useState(0);
   const [gameOver, setGameOver] = useState(false);
-  const [canFlip, setCanFlip] = useState(true);
+  const [canFlip, setCanFlip] = useState(false);
   const [lastFlippedIndex, setLastFlippedIndex] = useState(null);
   const [cardsToReplace, setCardsToReplace] = useState([]);
   const [powerUps, setPowerUps] = useState([]);
+  const [activePowerups, setActivePowerups] = useState([]);
   const [nftCardPlayed, setNftCardPlayed] = useState(null); // Add for NFT Card tracking
   const [hiveCoinsStaked, setHiveCoinsStaked] = useState(0); // For Hive coins
   const [gameStarted, setGameStarted] = useState(false); // Add this state
   const [hiveCoinsWallet, setHiveCoinsWallet] = useState(100); // available hive coins in user's wallet
+  let updatedPlayerHealth = player.health;
+  const healthPowerups = [
+    "Shadow Veil",
+    "Summon Bats",
+    "Silver Blade",
+    "Life Drain",
+    "Crimson Elixir",
+    "Vampiric Fury",
+    "Bloodlust Surge",
+    "Burn Card$",
+    "Venomous Fangs$",
+    "Mirror Curse$",
+  ];
 
   useEffect(() => {
     initializeCards();
@@ -119,14 +142,6 @@ const OpponentCards = ({ boosterPurchased }) => {
   useEffect(() => {
     initializeCards();
   }, []);
-
-  // useEffect(() => {
-  //   if (player.health <= 0) {
-  //     setGameOver(true);
-  //     // submitGameResultToHive(false); // Player lost
-  //     alert("Game Over! You lost.");
-  //   }
-  // }, [player.health]);
 
   const initializeCards = () => {
     const selectedHumans = getRandomElements(HUMANS, 3);
@@ -184,10 +199,6 @@ const OpponentCards = ({ boosterPurchased }) => {
       console.error("Error submitting game result:", error);
     }
   };
-
-  // const handleGameOver = async (gameOver) => {
-  //   await submitGameResultToMongo(gameOver);
-  // };
 
   const handleGameOver = async (isWin) => {
     // Only submit game result if the game has actually started and ended
@@ -254,6 +265,44 @@ const OpponentCards = ({ boosterPurchased }) => {
 
     console.log("Card flipped:", card);
 
+    if (
+      !werewolves_list.includes(card.name) &&
+      activePowerups.includes("Silver Blade")
+    ) {
+      console.log(
+        "silver blade removed without any effect cuz next card not werewolf"
+      );
+      setActivePowerups((prevPowerups) =>
+        prevPowerups.filter((powerup) => powerup !== "Silver Blade")
+      );
+    }
+
+    if (
+      !werewolves_list.includes(card.name) &&
+      activePowerups.includes("Crimson Elixir")
+    ) {
+      setActivePowerups((prevPowerups) =>
+        prevPowerups.filter((powerup) => powerup !== "Crimson Elixir")
+      );
+    }
+
+    if (
+      !(card.type === "damaging") &&
+      (activePowerups.includes("Burn Card$") ||
+        activePowerups.includes("Mirror Curse$") ||
+        activePowerups.includes("Venomous Fangs$"))
+    ) {
+      console.log("burn card removed wo effect");
+      setActivePowerups((prevPowerups) =>
+        prevPowerups.filter(
+          (powerup) =>
+            powerup !== "Burn Card$" &&
+            powerup !== "Mirror Curse$" &&
+            powerup !== "Venomous Fangs$"
+        )
+      );
+    }
+
     if (card.name.includes("Human") && card.name !== "Homid") {
       handleHumanCard(card, index);
     } else if (card.name === "Homid") {
@@ -269,6 +318,13 @@ const OpponentCards = ({ boosterPurchased }) => {
   };
 
   const handleHumanCard = (card, index) => {
+    if (activePowerups.includes("Bloodlust Surge")) {
+      console.log("bloodlust healing card function");
+      player.damage = player.damage + 1;
+      setActivePowerups((prevPowerups) =>
+        prevPowerups.filter((powerup) => powerup !== "Bloodlust Surge")
+      );
+    }
     setPlayer((prev) => {
       const newHealth = prev.health + card.health;
       console.log("Player healed:", card.health, "New health:", newHealth);
@@ -292,24 +348,118 @@ const OpponentCards = ({ boosterPurchased }) => {
     setCardsToReplace((prev) => [...prev, index]);
   };
 
+  let updatedOppCardHealth;
+  const handlePowerupEffect = (card) => {
+    updatedOppCardHealth = card.health;
+    if (activePowerups.includes("Shadow Veil")) {
+      console.log("no effect on player card cuz he got shadow veil");
+      updatedPlayerHealth = player.health;
+      updatedOppCardHealth = card.health - player.damage;
+      // Remove Shadow Veil from activePowerups
+      setActivePowerups((prevPowerups) =>
+        prevPowerups.filter((powerup) => powerup !== "Shadow Veil")
+      );
+    } else if (activePowerups.includes("Life Drain")) {
+      console.log("life drain: steals 10% health from enemy");
+      const percentage = 0.1 * updatedOppCardHealth;
+      updatedPlayerHealth = updatedPlayerHealth + percentage;
+      updatedOppCardHealth = updatedOppCardHealth - percentage;
+      // Remove life drain from activePowerups
+      setActivePowerups((prevPowerups) =>
+        prevPowerups.filter((powerup) => powerup !== "Life Drain")
+      );
+    } else if (activePowerups.includes("Summon Bats")) {
+      console.log("summon bats: reduces enemy damage by 15%");
+      updatedPlayerHealth = updatedPlayerHealth - 0.85 * card.damage;
+      updatedOppCardHealth = card.health - player.damage;
+      setActivePowerups((prevPowerups) =>
+        prevPowerups.filter((powerup) => powerup !== "Summon Bats")
+      );
+    } else if (activePowerups.includes("Crimson Elixir")) {
+      if (werewolves_list.includes(card.name)) {
+        console.log(
+          "Crimson Elixir: reduces damage by 30 percent if next card is a werewolf"
+        );
+        updatedPlayerHealth = updatedPlayerHealth - 0.7 * card.damage;
+        updatedOppCardHealth = card.health - player.damage;
+      } else {
+        console.log("lol crimson elixer gone to waste, you are noob");
+        updatedPlayerHealth = updatedPlayerHealth - card.damage;
+        updatedOppCardHealth = card.health - player.damage;
+      }
+      setActivePowerups((prevPowerups) =>
+        prevPowerups.filter((powerup) => powerup !== "Crimson Elixir")
+      );
+    } else if (activePowerups.includes("Silver Blade")) {
+      if (werewolves_list.includes(card.name)) {
+        console.log("silver blade: damage done increased by 5");
+        updatedPlayerHealth = updatedPlayerHealth - card.damage;
+        updatedOppCardHealth = card.health - (player.damage + 5);
+      } else {
+        console.log("silver blade gone to waste");
+        updatedPlayerHealth = updatedPlayerHealth - card.damage;
+        updatedOppCardHealth = card.health - player.damage;
+      }
+      setActivePowerups((prevPowerups) =>
+        prevPowerups.filter((powerup) => powerup !== "Silver Blade")
+      );
+    } else if (activePowerups.includes("Bloodlust Surge")) {
+      console.log("bloodlust goneee");
+      updatedPlayerHealth = updatedPlayerHealth - card.damage;
+      updatedOppCardHealth = card.health - player.damage;
+      setActivePowerups((prevPowerups) =>
+        prevPowerups.filter((powerup) => powerup !== "Bloodlust Surge")
+      );
+    } else if (activePowerups.includes("Burn Card$")) {
+      console.log(
+        "burn card: removes a damaging card and the player gets no damage"
+      );
+      updatedPlayerHealth = player.health;
+      updatedOppCardHealth = 0;
+      setActivePowerups((prevPowerups) =>
+        prevPowerups.filter((powerup) => powerup !== "Burn Card$")
+      );
+    } else if (activePowerups.includes("Venomous Fangs$")) {
+      console.log(
+        "venomous fangs: +10 damage if damaging card and takes damage too"
+      );
+      updatedPlayerHealth = updatedPlayerHealth - card.damage;
+      updatedOppCardHealth = card.health - (player.damage + 10);
+      setActivePowerups((prevPowerups) =>
+        prevPowerups.filter((powerup) => powerup !== "Venomous Fangs$")
+      );
+    } else if (activePowerups.includes("Mirror Curse$")) {
+      console.log("mirror curse: reflects all enemy damage back at them");
+      updatedPlayerHealth = player.health;
+      updatedOppCardHealth = card.health - card.damage;
+      setActivePowerups((prevPowerups) =>
+        prevPowerups.filter((powerup) => powerup !== "Mirror Curse$")
+      );
+    }
+  };
+
   const handleDamagingCard = (card, index) => {
-    const updatedPlayerHealth = player.health - card.damage;
-    const updatedCardHealth = card.health - player.damage;
+    updatedOppCardHealth = card.health;
+    if (healthPowerups.every((powerup) => !activePowerups.includes(powerup))) {
+      console.log("updated player health by function handleDamagingCard");
+      updatedPlayerHealth = player.health - card.damage;
+      updatedOppCardHealth = card.health - player.damage;
+    } else {
+      handlePowerupEffect(card, index);
+    }
 
     setPlayer((prev) => {
-      const newHealth = Math.max(0, updatedPlayerHealth);
-      console.log("Player took damage:", card.damage, "New health:", newHealth);
       // Check for game over due to health here
-      if (newHealth <= 0) {
+      if (updatedPlayerHealth <= 0) {
         handleGameOver(false); // Player lost
       }
-      return { ...prev, health: newHealth };
+      return { ...prev, health: updatedPlayerHealth };
     });
 
     const updatedCards = [...opponentCards];
     updatedCards[index] = {
       ...card,
-      health: Math.max(0, updatedCardHealth),
+      health: Math.max(0, updatedOppCardHealth),
       flipped: true,
     };
     setOpponentCards(updatedCards);
@@ -317,6 +467,14 @@ const OpponentCards = ({ boosterPurchased }) => {
   };
 
   const handleHealingCard = (card, index) => {
+    if (activePowerups.includes("Bloodlust Surge")) {
+      console.log("bloodlust healing card function");
+      player.damage = player.damage + 1;
+      setActivePowerups((prevPowerups) =>
+        prevPowerups.filter((powerup) => powerup !== "Bloodlust Surge")
+      );
+    }
+
     setPlayer((prev) => {
       const newHealth = prev.health + card.heal;
       console.log("Player healed:", card.heal, "New health:", newHealth);
@@ -348,12 +506,34 @@ const OpponentCards = ({ boosterPurchased }) => {
     console.log("Next turn started");
   };
 
+  useEffect(() => {
+    if (boosterPurchased && boosterPurchased !== "") {
+      handlePowerups();
+    }
+  }, [boosterPurchased]);
+
+  const handlePowerups = () => {
+    setPowerUps((prevPowerUps) => {
+      return [...prevPowerUps, boosterPurchased];
+    });
+    // Immediately activate the booster purchased
+    setActivePowerups((prev) => {
+      return [...prev, boosterPurchased];
+    });
+    console.log(boosterPurchased, "activateddd");
+  };
+
+  useEffect(() => {
+    console.log("oppcards; all powerups are: ", powerUps);
+    console.log("all active powerups: ", activePowerups);
+  }, [powerUps]);
+
   return (
     <div className="bg-red-950 p-4 rounded-lg">
       <div className="text-black mb-2">Opponent Cards</div>
       <div className="grid grid-cols-5 gap-2">
         {opponentCards.map((card, index) => (
-          <Card
+          <OpponentCard
             key={index}
             details={card}
             canFlip={
@@ -371,10 +551,12 @@ const OpponentCards = ({ boosterPurchased }) => {
         <p>Health: {player.health}</p>
         <p>Damage: {player.damage}</p>
         <p>Humans Defeated: {humansDefeated}/3</p>
+        <p>Current Powerups: {activePowerups}</p>
       </div>
 
       {!canFlip && !gameOver && (
         <button
+          id="nextTurn"
           className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
           onClick={handleNextTurn}
         >
