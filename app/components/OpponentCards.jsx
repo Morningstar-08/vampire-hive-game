@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Client, PrivateKey } from "@hiveio/dhive";
 import PlayerCard from "./PlayerCard";
+import { useAuth } from "../providers/AuthProvider";
 // Create a client instance
 const client = new Client([
   "https://api.hive.blog",
@@ -39,48 +40,73 @@ export const submitGameResultToMongo = async (gameOver) => {
 };
 
 // Function to broadcast game results
-const broadcastGameResult = async (
-  username,
-  postingKey,
-  nftCard,
-  gameResult
-) => {
-  try {
-    // Convert WIF to PrivateKey object if it's a string
-    const privateKey =
-      typeof postingKey === "string"
-        ? PrivateKey.fromString(postingKey)
-        : postingKey;
+// const broadcastGameResult = async (
+//   username,
+//   postingKey,
+//   nftCard,
+//   gameResult
+// ) => {
+//   try {
+//     // Convert WIF to PrivateKey object if it's a string
+//     const privateKey =
+//       typeof postingKey === "string"
+//         ? PrivateKey.fromString(postingKey)
+//         : postingKey;
 
-    // Prepare the custom JSON data
-    const customJsonOperation = [
-      "custom_json",
-      {
-        required_auths: [],
-        required_posting_auths: [username],
-        id: "vampireTesting",
-        json: JSON.stringify({
-          app: "vampire_game",
-          player: username,
-          nft_card: nftCard,
-          result: gameResult,
-          timestamp: new Date().toISOString(),
-        }),
-      },
-    ];
+//     // Prepare the custom JSON data
+//     const customJsonOperation = [
+//       "custom_json",
+//       {
+//         required_auths: [],
+//         required_posting_auths: [username],
+//         id: "vampireTesting",
+//         json: JSON.stringify({
+//           app: "vampire_game",
+//           player: username,
+//           nft_card: nftCard,
+//           result: gameResult,
+//           timestamp: new Date().toISOString(),
+//         }),
+//       },
+//     ];
 
-    // Broadcast the transaction
-    const result = await client.broadcast.sendOperations(
-      [customJsonOperation],
-      privateKey
-    );
+//     // Broadcast the transaction
+//     const result = await client.broadcast.sendOperations(
+//       [customJsonOperation],
+//       privateKey
+//     );
 
-    console.log("Transaction broadcast success:", result);
-    return result;
-  } catch (error) {
-    console.error("Transaction broadcast error:", error);
-    throw error;
-  }
+//     console.log("Transaction broadcast success:", result);
+//     return result;
+//   } catch (error) {
+//     console.error("Transaction broadcast error:", error);
+//     throw error;
+//   }
+// };
+
+const broadcastWithKeychain = async (user, nftCard, gameResult) => {
+  const customJsonData = {
+    app: "vampire_game",
+    player: user,
+    nft_card: nftCard,
+    result: gameResult,
+    timestamp: new Date().toISOString(),
+  };
+
+  window.hive_keychain.requestCustomJson(
+    user,
+    "vampireTesting",
+    "Posting",
+    JSON.stringify(customJsonData),
+    "Broadcast Game Result",
+    function (response) {
+      if (response.success) {
+        setMessage("Game result broadcasted successfully via Keychain!");
+      } else {
+        setMessage("Failed to broadcast game result via Keychain.");
+      }
+    }
+  );
 };
 
 const werewolves_list = [
@@ -213,6 +239,7 @@ const Card = ({ details, canFlip, onFlip }) => {
 };
 
 const OpponentCards = ({ boosterPurchased }) => {
+  const { user } = useAuth();
   const [opponentCards, setOpponentCards] = useState([]);
   const [humansDefeated, setHumansDefeated] = useState(0);
   const [gameOver, setGameOver] = useState(false);
@@ -268,12 +295,7 @@ const OpponentCards = ({ boosterPurchased }) => {
       }));
       setGameOver(true); // Set game over after successful submission
       const gameResult = isWin ? "win" : "lose";
-      await broadcastGameResult(
-        "kammeows",
-        process.env.NEXT_PUBLIC_HIVE_POSTING_KEY,
-        "test-vamp123",
-        gameResult
-      );
+      await broadcastWithKeychain(user, "test-vamp123", gameResult);
     } catch (error) {
       console.error("Failed to handle game over:", error);
       // Only show alert if game was actually played
