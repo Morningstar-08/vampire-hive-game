@@ -1,6 +1,7 @@
 "use client";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { useRouter } from "next/navigation";
+// import jwt from "jsonwebtoken";
 
 const AuthContext = createContext();
 
@@ -15,9 +16,13 @@ export const AuthProvider = ({ children }) => {
   // useEffect(() => {
   //   // Check if JWT is stored in cookies and decode it to get the user
   //   const token = localStorage.getItem("token");
-  //   if (token) {
-  //     const decoded = jwt_decode(token);
-  //     setUser(decoded.username);
+  //   try {
+  //     if (token) {
+  //       const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  //       setUser(decoded);
+  //     }
+  //   } catch (Err) {
+  //     console.log(Err);
   //   }
   // }, []);
 

@@ -13,6 +13,12 @@ export default function Modal({ isOpen, onClose, onSubmit }) {
     }
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSubmit();
+    }
+  };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
       <div className="bg-black border border-red-600 p-6 rounded-lg shadow-lg max-w-sm w-full">
@@ -21,6 +27,7 @@ export default function Modal({ isOpen, onClose, onSubmit }) {
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          onKeyDown={handleKeyPress}
           placeholder="Enter your Hive username"
           className="w-full p-2 rounded-md bg-gray-800 text-white border border-red-500 focus:outline-none focus:ring-2 focus:ring-red-600 mb-4"
         />

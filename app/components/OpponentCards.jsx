@@ -1,10 +1,111 @@
+// "use client";
 import React, { useEffect, useState } from "react";
-import PlayerCard from "../components/PlayerCard";
+import { Client, PrivateKey } from "@hiveio/dhive";
+import PlayerCard from "./PlayerCard";
+// Create a client instance
+const client = new Client([
+  "https://api.hive.blog",
+  "https://api.hivekings.com",
+  "https://api.openhive.network",
+]);
+
+//NOT WORKING
+export const submitGameResultToMongo = async (gameOver) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await fetch("/api/userStats", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        isWin: gameOver,
+      }),
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to update stats: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log("Stats updated:", data);
+  } catch (error) {
+    console.error("Error updating game result:", error);
+    throw error;
+  }
+};
+
+// Function to broadcast game results
+const broadcastGameResult = async (
+  username,
+  postingKey,
+  nftCard,
+  gameResult
+) => {
+  try {
+    // Convert WIF to PrivateKey object if it's a string
+    const privateKey =
+      typeof postingKey === "string"
+        ? PrivateKey.fromString(postingKey)
+        : postingKey;
+
+    // Prepare the custom JSON data
+    const customJsonOperation = [
+      "custom_json",
+      {
+        required_auths: [],
+        required_posting_auths: [username],
+        id: "vampireTesting",
+        json: JSON.stringify({
+          app: "vampire_game",
+          player: username,
+          nft_card: nftCard,
+          result: gameResult,
+          timestamp: new Date().toISOString(),
+        }),
+      },
+    ];
+
+    // Broadcast the transaction
+    const result = await client.broadcast.sendOperations(
+      [customJsonOperation],
+      privateKey
+    );
+
+    console.log("Transaction broadcast success:", result);
+    return result;
+  } catch (error) {
+    console.error("Transaction broadcast error:", error);
+    throw error;
+  }
+};
+
+const werewolves_list = [
+  "The Hybrid",
+  "Lycan",
+  "Shapeshifter",
+  "Poor Sod",
+  "Primordial Werewolf",
+];
+
+const healthPowerups = [
+  "Shadow Veil",
+  "Summon Bats",
+  "Silver Blade",
+  "Life Drain",
+  "Crimson Elixir",
+  "Vampiric Fury",
+  "Bloodlust Surge",
+  "Burn Card$",
+  "Venomous Fangs$",
+  "Mirror Curse$",
+];
 
 const HUMANS = [
   { name: "Normal Human 1", health: 0 },
   { name: "Normal Human 2", health: 0 },
-  { name: "Homid", health: 20 },
+  { name: "Normal Human 3", health: 0 },
+  // { name: "Homid", health: 20 },
 ];
 
 const WEREWOLVES = [
@@ -28,7 +129,7 @@ const getRandomElements = (array, count) => {
   return shuffled.slice(0, count);
 };
 
-const Card = ({ details, canFlip, onFlip }) => {
+const OpponentCard = ({ details, canFlip, onFlip }) => {
   return (
     <div
       className={`border p-2 rounded h-32 w-24 ${
@@ -50,27 +151,90 @@ const Card = ({ details, canFlip, onFlip }) => {
   );
 };
 
-const OpponentCards = () => {
+const Card = ({ details, canFlip, onFlip }) => {
+  return (
+    <div
+      className={`relative transform transition-all duration-300 flex-shrink-0 ${
+        canFlip ? "hover:scale-105 cursor-pointer" : ""
+      }`}
+      onClick={() => canFlip && onFlip()}
+    >
+      <div className="w-32 h-48 rounded-xl overflow-hidden backdrop-blur-sm border border-purple-500/30 relative">
+        <div
+          className={`w-full h-full transition-all duration-500 ${
+            details.flipped ? "bg-purple-900/80" : "bg-purple-800/60"
+          }`}
+        >
+          {details.flipped ? (
+            <div className="p-2 text-center text-purple-100 h-full flex flex-col justify-center items-center">
+              <p className="font-bold mb-2 text-sm bg-gradient-to-r from-purple-400 to-pink-300 text-transparent bg-clip-text">
+                {details.name}
+              </p>
+              <div className="space-y-1">
+                <p className="text-sm flex items-center justify-center space-x-1">
+                  <span className="text-purple-300">Health:</span>
+                  <span className="font-semibold">{details.health}</span>
+                </p>
+                {details.damage && (
+                  <p className="text-sm flex items-center justify-center space-x-1">
+                    <span className="text-purple-300">Damage:</span>
+                    <span className="font-semibold text-red-400">
+                      {details.damage}
+                    </span>
+                  </p>
+                )}
+                {details.heal && (
+                  <p className="text-sm flex items-center justify-center space-x-1">
+                    <span className="text-purple-300">Heal:</span>
+                    <span className="font-semibold text-green-400">
+                      {details.heal}
+                    </span>
+                  </p>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="h-full flex flex-col justify-center items-center">
+              <div className="w-12 h-12 rounded-full bg-purple-700/50 border border-purple-400/30 flex items-center justify-center mb-2">
+                <span className="text-xl text-purple-300">?</span>
+              </div>
+              <p className="text-purple-300 text-sm">Card</p>
+            </div>
+          )}
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-purple-900/40 to-transparent pointer-events-none" />
+      </div>
+      <div className="absolute -inset-px rounded-xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 -z-10 blur-sm" />
+    </div>
+  );
+};
+
+const OpponentCards = ({ boosterPurchased }) => {
   const [opponentCards, setOpponentCards] = useState([]);
-  const [player, setPlayer] = useState({ health: 100, damage: 10 });
+  const [player, setPlayer] = useState({
+    health: 100,
+    damage: 10,
+    wins: 0,
+    losses: 0,
+  });
   const [humansDefeated, setHumansDefeated] = useState(0);
   const [gameOver, setGameOver] = useState(false);
-  const [canFlip, setCanFlip] = useState(true);
+  const [canFlip, setCanFlip] = useState(false);
   const [lastFlippedIndex, setLastFlippedIndex] = useState(null);
   const [cardsToReplace, setCardsToReplace] = useState([]);
   const [powerUps, setPowerUps] = useState([]);
+  const [activePowerups, setActivePowerups] = useState([]);
+  const [gameStarted, setGameStarted] = useState(false);
+  let updatedPlayerHealth = player.health;
 
   useEffect(() => {
     initializeCards();
+    setGameStarted(true);
   }, []);
 
-  useEffect(() => {
-    if (player.health <= 0) {
-      setGameOver(true);
-      console.log("Game Over: Player lost");
-      alert("Game Over! You lost.");
-    }
-  }, [player.health]);
+  // useEffect(() => {
+  //   initializeCards();
+  // }, []);
 
   const initializeCards = () => {
     const selectedHumans = getRandomElements(HUMANS, 3);
@@ -87,6 +251,36 @@ const OpponentCards = () => {
       shuffledCards.map((card) => ({ ...card, flipped: false }))
     );
     console.log("Initial cards:", shuffledCards);
+  };
+
+  const handleGameOver = async (isWin) => {
+    // Only submit game result if the game has actually started and ended
+    if (!gameStarted || gameOver) {
+      return;
+    }
+
+    try {
+      // await submitGameResultToMongo(isWin);
+      setPlayer((prev) => ({
+        ...prev,
+        wins: isWin ? (prev.wins || 0) + 1 : prev.wins,
+        losses: !isWin ? (prev.losses || 0) + 1 : prev.losses,
+      }));
+      setGameOver(true); // Set game over after successful submission
+      const gameResult = isWin ? "win" : "lose";
+      await broadcastGameResult(
+        "kammeows",
+        process.env.NEXT_PUBLIC_HIVE_POSTING_KEY,
+        "test-vamp123",
+        gameResult
+      );
+    } catch (error) {
+      console.error("Failed to handle game over:", error);
+      // Only show alert if game was actually played
+      if (gameStarted) {
+        alert("Failed to update game statistics. Please try again.");
+      }
+    }
   };
 
   const shuffleDeck = () => {
@@ -120,6 +314,12 @@ const OpponentCards = () => {
     setCardsToReplace([]);
   };
 
+  const removePowerup = (powerup) => {
+    setActivePowerups((prevPowerups) =>
+      prevPowerups.filter((p) => p !== powerup)
+    );
+  };
+
   const handleFlip = (index) => {
     if (!canFlip || gameOver) return;
 
@@ -130,6 +330,27 @@ const OpponentCards = () => {
     setLastFlippedIndex(index);
 
     console.log("Card flipped:", card);
+
+    if (
+      !werewolves_list.includes(card.name) &&
+      (activePowerups.includes("Silver Blade") ||
+        activePowerups.includes("Crimson Elixir") ||
+        activePowerups.includes("Shadow Veil"))
+    ) {
+      console.log(activePowerups[0], "removed wo effect");
+      removePowerup(activePowerups[0]);
+    }
+
+    if (
+      !(card.type === "damaging") &&
+      (activePowerups.includes("Burn Card$") ||
+        activePowerups.includes("Mirror Curse$") ||
+        activePowerups.includes("Venomous Fangs$") ||
+        activePowerups.includes("Life Drain"))
+    ) {
+      console.log(activePowerups[0], "removed wo effect");
+      removePowerup(activePowerups[0]);
+    }
 
     if (card.name.includes("Human") && card.name !== "Homid") {
       handleHumanCard(card, index);
@@ -145,22 +366,24 @@ const OpponentCards = () => {
     checkGameOver();
   };
 
-  const handleHealthChange = (newHealth) => {
-    setPlayer((prev) => ({ ...prev, health: newHealth }));
-  };
-
-  const handleDamageChange = (newDamage) => {
-    setPlayer((prev) => ({ ...prev, damage: newDamage }));
-  };
-
   const handleHumanCard = (card, index) => {
+    if (activePowerups.includes("Bloodlust Surge")) {
+      console.log("bloodlust healing card function");
+      player.damage = player.damage + 1;
+      removePowerup(activePowerups[0]);
+    }
     setPlayer((prev) => {
       const newHealth = prev.health + card.health;
       console.log("Player healed:", card.health, "New health:", newHealth);
       return { ...prev, health: newHealth };
     });
+    const newHumansDefeated = humansDefeated + 1;
+
     setHumansDefeated((prev) => prev + 1);
     setCardsToReplace((prev) => [...prev, index]);
+    if (newHumansDefeated === 3) {
+      handleGameOver(true);
+    }
   };
 
   const handleHomidCard = (card, index) => {
@@ -172,20 +395,90 @@ const OpponentCards = () => {
     setCardsToReplace((prev) => [...prev, index]);
   };
 
+  let updatedOppCardHealth;
+  const handlePowerupEffect = (card) => {
+    updatedOppCardHealth = card.health;
+    if (activePowerups.includes("Shadow Veil")) {
+      console.log("shadow veil: no effect on player card");
+      updatedPlayerHealth = player.health;
+      updatedOppCardHealth = card.health - player.damage;
+    } else if (activePowerups.includes("Life Drain")) {
+      console.log("life drain: steals 10% health from enemy");
+      const percentage = 0.1 * updatedOppCardHealth;
+      updatedPlayerHealth = updatedPlayerHealth + percentage;
+      updatedOppCardHealth = updatedOppCardHealth - percentage;
+    } else if (activePowerups.includes("Summon Bats")) {
+      console.log("summon bats: reduces enemy damage by 15%");
+      updatedPlayerHealth = updatedPlayerHealth - 0.85 * card.damage;
+      updatedOppCardHealth = card.health - player.damage;
+    } else if (activePowerups.includes("Crimson Elixir")) {
+      if (werewolves_list.includes(card.name)) {
+        console.log(
+          "Crimson Elixir: reduces damage by 30 percent if next card is a werewolf"
+        );
+        updatedPlayerHealth = updatedPlayerHealth - 0.7 * card.damage;
+        updatedOppCardHealth = card.health - player.damage;
+      } else {
+        console.log("crimson elixer gone to waste");
+        updatedPlayerHealth = updatedPlayerHealth - card.damage;
+        updatedOppCardHealth = card.health - player.damage;
+      }
+    } else if (activePowerups.includes("Silver Blade")) {
+      if (werewolves_list.includes(card.name)) {
+        console.log("silver blade: damage done increased by 5");
+        updatedPlayerHealth = updatedPlayerHealth - card.damage;
+        updatedOppCardHealth = card.health - (player.damage + 5);
+      } else {
+        console.log("silver blade gone to waste");
+        updatedPlayerHealth = updatedPlayerHealth - card.damage;
+        updatedOppCardHealth = card.health - player.damage;
+      }
+    } else if (activePowerups.includes("Bloodlust Surge")) {
+      console.log("bloodlust gone to waste");
+      updatedPlayerHealth = updatedPlayerHealth - card.damage;
+      updatedOppCardHealth = card.health - player.damage;
+    } else if (activePowerups.includes("Burn Card$")) {
+      console.log(
+        "burn card: removes a damaging card and the player gets no damage"
+      );
+      updatedPlayerHealth = player.health;
+      updatedOppCardHealth = 0;
+    } else if (activePowerups.includes("Venomous Fangs$")) {
+      console.log(
+        "venomous fangs: +10 damage if damaging card and takes damage too"
+      );
+      updatedPlayerHealth = updatedPlayerHealth - card.damage;
+      updatedOppCardHealth = card.health - (player.damage + 10);
+    } else if (activePowerups.includes("Mirror Curse$")) {
+      console.log("mirror curse: reflects all enemy damage back at them");
+      updatedPlayerHealth = player.health;
+      updatedOppCardHealth = card.health - card.damage;
+    }
+    removePowerup(activePowerups[0]);
+  };
+
   const handleDamagingCard = (card, index) => {
-    const updatedPlayerHealth = player.health - card.damage;
-    const updatedCardHealth = card.health - player.damage;
+    updatedOppCardHealth = card.health;
+    if (healthPowerups.every((powerup) => !activePowerups.includes(powerup))) {
+      console.log("no powerup, default health updation");
+      updatedPlayerHealth = player.health - card.damage;
+      updatedOppCardHealth = card.health - player.damage;
+    } else {
+      handlePowerupEffect(card, index);
+    }
 
     setPlayer((prev) => {
-      const newHealth = Math.max(0, updatedPlayerHealth);
-      console.log("Player took damage:", card.damage, "New health:", newHealth);
-      return { ...prev, health: newHealth };
+      // Check for game over due to health here
+      if (updatedPlayerHealth <= 0) {
+        handleGameOver(false); // Player lost
+      }
+      return { ...prev, health: updatedPlayerHealth };
     });
 
     const updatedCards = [...opponentCards];
     updatedCards[index] = {
       ...card,
-      health: Math.max(0, updatedCardHealth),
+      health: Math.max(0, updatedOppCardHealth),
       flipped: true,
     };
     setOpponentCards(updatedCards);
@@ -193,6 +486,12 @@ const OpponentCards = () => {
   };
 
   const handleHealingCard = (card, index) => {
+    if (activePowerups.includes("Bloodlust Surge")) {
+      console.log("bloodlust surge: damage increased by 1 for entire game");
+      player.damage = player.damage + 1;
+      removePowerup(activePowerups[0]);
+    }
+
     setPlayer((prev) => {
       const newHealth = prev.health + card.heal;
       console.log("Player healed:", card.heal, "New health:", newHealth);
@@ -201,17 +500,18 @@ const OpponentCards = () => {
     setCardsToReplace((prev) => [...prev, index]);
   };
 
+  useEffect(() => {
+    if (gameOver !== undefined) {
+      handleGameOver(gameOver);
+    }
+  }, [gameOver]);
+
   const checkGameOver = () => {
     if (humansDefeated === 3) {
       setGameOver(true);
-      setPlayer((prev) => ({ ...prev, wins: prev.wins + 1 }));
+      handleGameOver(true);
       console.log("Game Over: Player won");
       alert("Congratulations! You won!");
-    } else if (player.health <= 0) {
-      setGameOver(true);
-      setPlayer((prev) => ({ ...prev, losses: prev.losses + 1 }));
-      console.log("Game Over: Player lost");
-      alert("Game Over! You lost.");
     }
   };
 
@@ -223,41 +523,146 @@ const OpponentCards = () => {
     console.log("Next turn started");
   };
 
+  useEffect(() => {
+    if (boosterPurchased && boosterPurchased !== "") {
+      handlePowerups();
+    }
+  }, [boosterPurchased]);
+
+  const handlePowerups = () => {
+    setPowerUps((prevPowerUps) => {
+      return [...prevPowerUps, boosterPurchased];
+    });
+    // Immediately activate the booster purchased
+    setActivePowerups((prev) => {
+      return [...prev, boosterPurchased];
+    });
+    console.log(boosterPurchased, "activatedd");
+  };
+
+  useEffect(() => {
+    console.log("oppcards; all powerups purchased: ", powerUps);
+    console.log("active powerup: ", activePowerups);
+  }, [powerUps]);
+
   return (
-    <div className="bg-red-950 p-4 rounded-lg">
-      <div className="text-black mb-2">Opponent Cards</div>
-      <div className="grid grid-cols-5 gap-2">
-        {opponentCards.map((card, index) => (
-          <Card
-            key={index}
-            details={card}
-            canFlip={
-              canFlip &&
-              !gameOver &&
-              (card.health > 0 || card.type !== "damaging")
+    // <div className="bg-red-950 p-4 rounded-lg">
+    //   {/* Horizontal row of opponent cards */}
+    //   <div className="mb-4">
+    //     <div className="text-black mb-2">Opponent Cards</div>
+    //     <div className="flex justify-center gap-2 overflow-x-auto">
+    //       {opponentCards.map((card, index) => (
+    //         <OpponentCard
+    //           key={index}
+    //           details={card}
+    //           canFlip={
+    //             canFlip &&
+    //             !gameOver &&
+    //             (card.health > 0 || card.type !== "damaging")
+    //           }
+    //           onFlip={() => handleFlip(index)}
+    //         />
+    //       ))}
+    //     </div>
+    //   </div>
+
+    //   {/* Bottom section with player card and next turn button */}
+    //   <div className="flex items-center justify-center gap-4">
+    //     {/* Player Stats Card */}
+    //     <div className="bg-red-800 p-3 rounded-lg shadow-lg w-48">
+    //       <div className="bg-red-800 h-24 mb-2 rounded-lg flex items-center justify-center">
+    //         <p className="text-gray-600 text-sm">Image Placeholder</p>
+    //       </div>
+    //       <h2 className="text-white text-sm font-bold mb-1">Player Stats</h2>
+    //       <div className="text-sm">
+    //         <p className="mb-1">Health: {player.health}</p>
+    //         <p className="mb-1">Damage: {player.damage}</p>
+    //         <p className="mb-1">Humans Defeated: {humansDefeated}/3</p>
+    //         <p className="mb-1">Powerup: {activePowerups}</p>
+    //       </div>
+    //     </div>
+
+    //     {!canFlip && !gameOver && (
+    //       <button
+    //         id="nextTurn"
+    //         className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors"
+    //         onClick={handleNextTurn}
+    //       >
+    //         Next Turn
+    //       </button>
+    //     )}
+    //   </div>
+
+    //   {gameOver && <div className="text-red-500 mt-4">Game Over!</div>}
+    // </div>
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-purple-900/20 to-black">
+      <div className="max-w-[1440px] mx-auto px-4 py-8">
+        {/* Title */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-300 text-transparent bg-clip-text drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">
+            Opponent Cards
+          </h1>
+        </div>
+
+        {/* Opponent Cards Row */}
+        <div className="mb-8">
+          <div className="relative">
+            {/* Background glow effect */}
+            <div className="absolute inset-0 bg-purple-500/5 blur-3xl rounded-3xl" />
+
+            {/* Cards container */}
+            <div className="relative backdrop-blur-sm rounded-3xl p-3 border border-purple-500/10">
+              {/* Scrollable container */}
+              <div className="overflow-x-auto pb-2 hide-scrollbar">
+                {/* Fixed-width container to ensure cards stay in one row */}
+                <div className="flex gap-2 min-w-min mx-auto justify-center">
+                  {opponentCards.map((card, index) => (
+                    <Card
+                      key={index}
+                      details={card}
+                      canFlip={canFlip}
+                      onFlip={() => handleFlip(index)}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Player Card Section */}
+        <div className="flex justify-center mb-8">
+          <PlayerCard player={player} powerUps={powerUps} />
+        </div>
+
+        {/* Action Button */}
+        <div className="flex justify-center">
+          <button
+            className={`px-8 py-3 rounded-lg font-semibold text-white
+            ${
+              gameOver
+                ? "bg-purple-900/50 cursor-not-allowed"
+                : "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
             }
-            onFlip={() => handleFlip(index)}
-          />
-        ))}
+            transition-all duration-300 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/50`}
+            onClick={handleNextTurn}
+            disabled={gameOver}
+          >
+            Next Turn
+          </button>
+        </div>
       </div>
 
-      <div className="mt-4">
-        <h2 className="text-white">Player Stats</h2>
-        <p>Health: {player.health}</p>
-        <p>Damage: {player.damage}</p>
-        <p>Humans Defeated: {humansDefeated}/3</p>
-      </div>
-
-      {!canFlip && !gameOver && (
-        <button
-          className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
-          onClick={handleNextTurn}
-        >
-          Next Turn
-        </button>
-      )}
-
-      {gameOver && <div className="text-red-500 mt-4">Game Over!</div>}
+      {/* Custom scrollbar styles */}
+      <style jsx global>{`
+        .hide-scrollbar {
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </div>
   );
 };
