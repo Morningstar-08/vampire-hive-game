@@ -124,7 +124,7 @@ const GameStore = ({ drachmas }) => {
       </div>
 
       {/* Right side - Game Store */}
-      {/* <div className="w-80 bg-gray-900 p-4 rounded-lg">
+      <div className="w-80 bg-gray-900 p-4 rounded-lg">
         <h2 className="text-white text-lg font-semibold mb-4">
           In-Store Market
         </h2>
@@ -172,8 +172,8 @@ const GameStore = ({ drachmas }) => {
               : "Purchase more Drachmas"}
           </p>
         </div>
-      </div> */}
-      <div className="bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 text-white max-w-96 p-6 rounded-lg shadow-lg border border-purple-800 relative z-10 m-4">
+      </div>
+      {/* <div className="bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 text-white max-w-96 p-6 rounded-lg shadow-lg border border-purple-800 relative z-10 m-4">
         <h2 className="text-lg sm:text-2xl font-bold mb-6 text-center text-purple-500">
           In-Store Market
         </h2>
@@ -206,7 +206,7 @@ const GameStore = ({ drachmas }) => {
               </div>
             ))}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
