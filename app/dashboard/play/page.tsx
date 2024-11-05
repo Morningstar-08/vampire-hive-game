@@ -9,37 +9,34 @@ export default function Play() {
   const { user } = useAuth();
   const router = useRouter();
 
+  // Redirect if user is not logged in
   useEffect(() => {
     if (!user) {
       router.push("/");
     }
   }, [user]);
 
+  // Parent state for drachmas
+  const [drachmas, setDrachmas] = useState(1000);
+
+  // Callback function to update drachmas
+  const handleDrachmasChange = (newDrachmas: number) => {
+    setDrachmas(newDrachmas);
+  };
+
   if (!user) {
     return <p>Loading...</p>;
   }
 
-  const [drachmas, setDrachmas] = useState(1000);
-
   return (
-    // <div className="container mx-auto p-4">
-    //   <h1 className="text-3xl font-bold mb-4">Play</h1>
-    //   <p>Welcome to your Playing, @{user}!</p>
-    //   <div className=" flex items-center h-screen ">
-    //     <div className="p-8 rounded-lg flex space-x-4">
-    //       <GameStore drachmas={drachmas} />
-    //     </div>
-    //   </div>
-    // </div>
-
     <div
       className="h-screen w-screen flex bg-cover bg-center relative overflow-hidden"
       style={{
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/playgame.jpg')`,
       }}
     >
-      {/* Main Game Area - Takes up all space except for GameStore width */}
-      <div className="w-full h-full">
+      {/* Main Game Area */}
+      <div className="">
         {/* Currency Display */}
         <div className="absolute top-4 right-[22%] transform translate-x-[-1rem] flex items-center space-x-4">
           {/* Drachmas Display */}
@@ -90,17 +87,16 @@ export default function Play() {
             </div>
           </div>
         </div>
-
-        {/* This wrapper ensures OpponentCards takes up the full available width */}
-        {/* <div className="w-full h-full">
-          <OpponentCards boosterPurchased={booster} />
-        </div> */}
-        <div className="w-full h-full  border-purple-500/30">
-          <GameStore drachmas={drachmas} />
-        </div>
       </div>
 
-      {/* Game Store - Fixed width on the right */}
+      {/* GameStore Component */}
+      <div className="w-full h-full border-purple-500/30">
+        {/* Pass down the callback to GameStore */}
+        <GameStore
+          drachmas={drachmas}
+          onDrachmasChange={handleDrachmasChange}
+        />
+      </div>
     </div>
   );
 }

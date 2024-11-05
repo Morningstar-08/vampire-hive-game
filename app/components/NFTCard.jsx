@@ -25,7 +25,7 @@ const NFTCard = () => {
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-900/20 to-purple-900/40"></div>
               {/* Placeholder for NFT image */}
               <img
-                src="/api/placeholder/400/320"
+                src="/nft.jpeg"
                 alt="NFT Character"
                 className="w-full h-full object-cover"
               />

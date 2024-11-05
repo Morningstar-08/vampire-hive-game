@@ -28,10 +28,18 @@ const GameHistory = () => {
       reward: "+300",
       powerUsed: "Dark Ritual",
     },
+    {
+      id: 4,
+      date: "Oct 29",
+      type: "Quest",
+      outcome: "Victory",
+      reward: "+300",
+      powerUsed: "Dark Ritual",
+    },
   ];
 
   return (
-    <div className="relative m-8  max-w-4xl h-[28rem]">
+    <div className="relative m-8 max-w-4xl ">
       {/* Animated border */}
       <div className="absolute -inset-0.5 bg-gradient-to-r from-red-500 via-purple-500 to-red-500 rounded-xl blur opacity-75 animate-gradient-x"></div>
 
@@ -45,7 +53,7 @@ const GameHistory = () => {
         </h2>
 
         {/* History entries in a column */}
-        <div className="space-y-4 w-full max-w-2xl">
+        <div className="p-5 space-y-4 w-full max-w-2xl">
           {historyEntries.map((entry) => (
             <div
               key={entry.id}

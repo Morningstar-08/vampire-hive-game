@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import OpponentCards from "./OpponentCards";
 
-const GameStore = ({ drachmas }) => {
+const GameStore = ({ drachmas, onDrachmasChange }) => {
   const [prevButtonVisibility, setPrevButtonVisibility] = useState(false);
   // Check if Next Turn button is visible and update canBuy accordingly
   useEffect(() => {
@@ -100,6 +100,7 @@ const GameStore = ({ drachmas }) => {
   };
 
   const handleBooster = (item) => {
+    // Update parent drachmas
     const nextTurnButton = document.getElementById("nextTurn");
     const isNextTurnVisible =
       nextTurnButton &&
@@ -109,6 +110,8 @@ const GameStore = ({ drachmas }) => {
     console.log("GameStore - Item clicked:", item.name); // Debug log
     setBoosterPurchased(item.name);
     if (drachmasCount >= item.cost) {
+      const updatedDrachmas = drachmas - item.cost;
+      onDrachmasChange(updatedDrachmas);
       setBoosterPurchased(item.name);
       setDrachmasCount((prev) => prev - item.cost);
       setCanBuy(false);
@@ -124,17 +127,17 @@ const GameStore = ({ drachmas }) => {
       </div>
 
       {/* Right side - Game Store */}
-      <div className="w-80 bg-gray-900 p-4 rounded-lg">
-        <h2 className="text-white text-lg font-semibold mb-4">
+      <div className="bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 text-white max-w-96 p-6 rounded-lg shadow-lg border border-purple-800 relative z-10 m-4">
+        <h2 className="text-lg sm:text-2xl font-bold mb-6 text-center text-purple-500">
           In-Store Market
         </h2>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap justify-center gap-6">
           {displayedItems
             .filter((item) => !purchasedItems.has(item.name))
             .map((item, index) => (
               <div
                 key={index}
-                className="relative bg-gray-700 p-3 rounded-lg shadow-md transition-all duration-200"
+                className="flex flex-col bg-gray-700 hover:bg-purple-600 p-5 rounded-lg shadow-md cursor-pointer transition-transform transform hover:scale-105 w-full sm:w-[48%] lg:w-[46%] text-center"
               >
                 <button
                   className="absolute top-2 right-2 w-5 h-5 rounded-full bg-gray-600 text-white text-xs flex items-center justify-center hover:bg-gray-500"
@@ -146,10 +149,10 @@ const GameStore = ({ drachmas }) => {
                   i
                 </button>
 
-                <h3 className="text-white text-sm font-bold mb-2 text-center pr-6">
+                <h3 className="text-lg sm:text-xl font-bold mb-4 text-purple-300">
                   {item.name}
                 </h3>
-                <div className="text-gray-300 text-xs text-center mb-3">
+                <div className="text-sm mb-4">
                   Cost:{" "}
                   <span className="font-semibold">{item.cost} Drachmas</span>
                 </div>

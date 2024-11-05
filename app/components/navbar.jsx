@@ -13,7 +13,7 @@ export default function Navbar(props) {
   };
 
   return (
-    <nav className="navbar sticky top-0 left-0 w-full z-50 bg-black/70 backdrop-blur-lg py-4 px-8 shadow-lg flex justify-between items-center font-semibold">
+    <nav className="navbar fixed top-0 left-0 w-full z-50 bg-black/70 backdrop-blur-lg py-4 px-8 shadow-lg flex justify-between items-center font-semibold">
       {/* Logo Section */}
       <div className="logo flex items-center">
         <img
@@ -64,7 +64,7 @@ export default function Navbar(props) {
         </li>
         <li>
           <button className="nav-link" onClick={props.openModal}>
-              Login / Sign Up
+            Login / Sign Up
           </button>
         </li>
       </ul>

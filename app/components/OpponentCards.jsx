@@ -101,9 +101,9 @@ const broadcastWithKeychain = async (user, nftCard, gameResult) => {
     "Broadcast Game Result",
     function (response) {
       if (response.success) {
-        setMessage("Game result broadcasted successfully via Keychain!");
+        alert("Game result broadcasted successfully via Keychain!");
       } else {
-        setMessage("Failed to broadcast game result via Keychain.");
+        alert("Failed to broadcast game result via Keychain.");
       }
     }
   );
@@ -131,26 +131,26 @@ const healthPowerups = [
 ];
 
 const HUMANS = [
-  { name: "Normal Human 1", health: 0 },
-  { name: "Normal Human 2", health: 0 },
-  { name: "Normal Human 3", health: 0 },
+  { name: "Normal_Human", health: 0 },
+  { name: "Normal_Human", health: 0 },
+  { name: "Normal_Human", health: 0 },
   // { name: "Homid", health: 20 },
 ];
 
 const WEREWOLVES = [
-  { name: "The Hybrid", health: 40, damage: 20, type: "damaging" },
+  { name: "The_Hybrid", health: 40, damage: 20, type: "damaging" },
   { name: "Lycan", health: 20, damage: 10, type: "damaging" },
   { name: "Shapeshifter", health: 20, damage: 10, type: "damaging" },
-  { name: "Poor Sod", health: 15, damage: 10, type: "damaging" },
-  { name: "Primordial Werewolf", health: 40, damage: 15, type: "damaging" },
+  { name: "Poor_Sod", health: 15, damage: 10, type: "damaging" },
+  { name: "Primordial_Werewolf", health: 40, damage: 15, type: "damaging" },
 ];
 
 const WITCHES = [
-  { name: "Elemental Witch", health: 30, damage: 10, type: "damaging" },
-  { name: "Green Witch", health: 25, damage: 7, type: "damaging" },
-  { name: "Cosmic Witch", health: 35, damage: 8, type: "neutral" },
-  { name: "Kitchen Witch", health: 20, heal: 10, type: "healing" },
-  { name: "Hedge Witch", health: 25, heal: 15, type: "healing" },
+  { name: "Elemental_Witch", health: 30, damage: 10, type: "damaging" },
+  { name: "Green_Witch", health: 25, damage: 7, type: "damaging" },
+  { name: "Cosmic_Witch", health: 35, damage: 8, type: "neutral" },
+  { name: "Kitchen_Witch", health: 20, heal: 10, type: "healing" },
+  { name: "Hedge_Witch", health: 25, heal: 15, type: "healing" },
 ];
 
 const getRandomElements = (array, count) => {
@@ -195,7 +195,13 @@ const Card = ({ details, canFlip, onFlip }) => {
           }`}
         >
           {details.flipped ? (
-            <div className="p-2 text-center text-purple-100 h-full flex flex-col justify-center items-center">
+            <div
+              className="p-2 text-center text-purple-100 h-full flex flex-col justify-center items-center"
+              style={{
+                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.4)), url('/${details.name}.jpg')`,
+                backgroundSize: "cover",
+              }}
+            >
               <p className="font-bold mb-2 text-sm bg-gradient-to-r from-purple-400 to-pink-300 text-transparent bg-clip-text">
                 {details.name}
               </p>
@@ -368,7 +374,8 @@ const OpponentCards = ({ boosterPurchased }) => {
       (activePowerups.includes("Burn Card$") ||
         activePowerups.includes("Mirror Curse$") ||
         activePowerups.includes("Venomous Fangs$") ||
-        activePowerups.includes("Life Drain"))
+        activePowerups.includes("Life Drain") ||
+        activePowerups.includes("Summon Bats"))
     ) {
       console.log(activePowerups[0], "removed wo effect");
       removePowerup(activePowerups[0]);
@@ -668,7 +675,7 @@ const OpponentCards = ({ boosterPurchased }) => {
           <div className="flex justify-center">
             <button
               id="nextTurn"
-              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors"
+              className="bg-purple-500 text-white px-9 py-4 rounded hover:bg-purple-700 transition-colors"
               //   className={`px-8 py-3 rounded-lg font-semibold text-white
               // ${
               //   gameOver

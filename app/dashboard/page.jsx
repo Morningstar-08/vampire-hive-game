@@ -89,9 +89,10 @@ import InventoryCard from "../components/InventoryCard";
 import ShopCard from "../components/ShopCard";
 import GameHistory from "../components/GameHistory";
 import NFTCard from "../components/NFTCard";
+import VampireCursor from "../components/VampireCursor";
 
 const UserStats = ({ username, hiveCoins, drachmas }) => (
-  <div className="bg-gray-900/40 backdrop-blur-sm rounded-xl p-6 border border-purple-500/20">
+  <div className="max-w-4xl m-8 relative bg-gray-900/40 backdrop-blur-sm rounded-xl p-6 border border-purple-500/20">
     <div className="flex items-center gap-4 mb-4">
       <div className="w-12 h-12 bg-purple-900/50 rounded-full border border-purple-500/30" />
       <span className="text-2xl font-bold text-purple-100">{username}</span>
@@ -227,6 +228,7 @@ export default function Dashboard() {
         backgroundPosition: "center",
       }}
     >
+      <VampireCursor />
       <div className=" min-w-[100%] h-full grid grid-cols-[1fr_0.8fr_1fr] gap-8">
         {/* Left Column */}
         <div className="space-y-10 -ml-4">

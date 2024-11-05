@@ -31,7 +31,6 @@
 import React from "react";
 
 const PlayerCard = ({ player, powerUps }) => {
-  console.log(powerUps);
   // const {
   //   wins = 0,
   //   losses = 0,

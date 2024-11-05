@@ -31,13 +31,13 @@ const ShopCard = () => {
     //   </div>
     // </div>
 
-    <div className="relative max-w-4xl">
+    <div className="relative m-8 max-w-4xl">
       {/* Animated border */}
       <div className="absolute -inset-0.5 bg-gradient-to-r from-red-500 via-purple-500 to-red-500 rounded-xl blur opacity-75 animate-gradient-x"></div>
 
       <div className="relative bg-gradient-to-b from-gray-900/90 to-black/90 rounded-xl backdrop-blur-sm border border-purple-500/20 p-4">
         <h2
-          className="text-2xl font-gothic text-red-200 mb-4"
+          className="text-2xl font-gothic text-red-200 mb-4 text-center"
           style={{ textShadow: "0 0 10px rgba(220, 38, 38, 0.5)" }}
         >
           Shop

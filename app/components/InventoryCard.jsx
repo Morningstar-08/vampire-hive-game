@@ -1,6 +1,6 @@
 const InventoryCard = ({ inventory }) => {
   return (
-    <div className="w-72 bg-black/30 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+    <div className="max-w-4xl m-8 bg-black/30 backdrop-blur-sm rounded-xl p-4 border border-white/10">
       <h2 className="text-2xl font-bold text-white mb-4 text-center">
         Your Inventory
       </h2>
