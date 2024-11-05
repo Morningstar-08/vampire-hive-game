@@ -30,14 +30,15 @@
 
 import React from "react";
 
-const PlayerCard = ({ player = {}, powerUps = [] }) => {
-  const {
-    wins = 0,
-    losses = 0,
-    health = 100,
-    damage = 10,
-    humansDefeated = 0,
-  } = player;
+const PlayerCard = ({ player, powerUps }) => {
+  console.log(powerUps);
+  // const {
+  //   wins = 0,
+  //   losses = 0,
+  //   health = 100,
+  //   damage = 10,
+  //   humansDefeated = 0,
+  // } = player;
 
   return (
     <div className="relative h-full max-w-xs w-full">
@@ -47,10 +48,10 @@ const PlayerCard = ({ player = {}, powerUps = [] }) => {
           {/* Stats Header */}
           <div className="flex justify-between text-xs text-purple-200 mb-2">
             <div className="px-2 py-1 rounded-full bg-purple-900/50 border border-purple-500/30">
-              Wins: {wins}
+              Wins: {player.wins}
             </div>
             <div className="px-2 py-1 rounded-full bg-purple-900/50 border border-purple-500/30">
-              Losses: {losses}
+              Losses: {player.losses}
             </div>
           </div>
 
@@ -72,19 +73,19 @@ const PlayerCard = ({ player = {}, powerUps = [] }) => {
             <div className="flex justify-between items-center">
               <span className="text-purple-200">Health</span>
               <div className="px-2 py-1 rounded-lg bg-purple-900/50 text-purple-100 border border-purple-500/30">
-                {health}
+                {player.health}
               </div>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-purple-200">Damage</span>
               <div className="px-2 py-1 rounded-lg bg-purple-900/50 text-purple-100 border border-purple-500/30">
-                {damage}
+                {player.damage}
               </div>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-purple-200">Humans Defeated</span>
               <div className="px-2 py-1 rounded-lg bg-purple-900/50 text-purple-100 border border-purple-500/30">
-                {humansDefeated}
+                {player.humansDefeated}
               </div>
             </div>
           </div>
@@ -102,7 +103,7 @@ const PlayerCard = ({ player = {}, powerUps = [] }) => {
                       key={index}
                       className="px-2 py-1 rounded-full bg-purple-900/50 border border-purple-500/30"
                     >
-                      {powerUp.name}
+                      {powerUp}
                     </span>
                   ))}
                 </div>

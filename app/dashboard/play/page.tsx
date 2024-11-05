@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import GameStore from "@/app/components/GameStore";
 import { Coins, Gem, Plus } from "lucide-react";
-import OpponentCards from "@/app/components/OpponentCards";
 
 export default function Play() {
   const { user } = useAuth();
@@ -42,7 +41,7 @@ export default function Play() {
       {/* Main Game Area - Takes up all space except for GameStore width */}
       <div className="w-full h-full">
         {/* Currency Display */}
-        <div className="absolute top-4 right-[20%] transform translate-x-[-1rem] flex items-center space-x-4">
+        <div className="absolute top-4 right-[22%] transform translate-x-[-1rem] flex items-center space-x-4">
           {/* Drachmas Display */}
           <div className="group relative">
             <div className="flex items-center bg-gradient-to-r from-yellow-900/50 to-yellow-800/50 rounded-lg p-2 pr-4 border border-yellow-600/30 hover:border-yellow-500/50 transition-all duration-300">
@@ -78,7 +77,7 @@ export default function Play() {
                   Hive Coins Owned
                 </div>
                 <div className="text-xl font-bold text-purple-400">
-                  {/* {hiveCoins.toLocaleString()} */}
+                  {drachmas.toLocaleString()}
                 </div>
               </div>
               <button className="ml-3 p-1 rounded-full bg-purple-500/20 hover:bg-purple-500/30 transition-colors">

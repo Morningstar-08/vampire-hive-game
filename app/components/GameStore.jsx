@@ -173,31 +173,38 @@ const GameStore = ({ drachmas }) => {
           </p>
         </div>
       </div> */}
-      <div className="bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 text-white p-6 rounded-lg shadow-lg h-full w-full border border-purple-800 relative z-10">
+      <div className="bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 text-white max-w-96 p-6 rounded-lg shadow-lg border border-purple-800 relative z-10 m-4">
         <h2 className="text-lg sm:text-2xl font-bold mb-6 text-center text-purple-500">
           In-Store Market
         </h2>
 
         <div className="flex flex-col sm:flex-row sm:flex-wrap justify-center gap-6">
-          {displayedItems.map((item, index) => (
-            <div
-              key={index}
-              className="flex flex-col bg-gray-700 hover:bg-purple-600 p-5 rounded-lg shadow-md cursor-pointer transition-transform transform hover:scale-105 w-full sm:w-[48%] lg:w-[46%] text-center"
-              onClick={() => broughtItem(item)}
-            >
-              <h3 className="text-lg sm:text-xl font-bold mb-4 text-purple-300">
-                {item.name}
-              </h3>
-              <div className="text-sm mb-4">
-                Cost:{" "}
-                <span className="font-semibold">{item.cost} Drachmas</span>
-                <div className="absolute -inset-2 bg-gradient-to-r from-red-500 via-purple-500 to-blue-500 rounded-2xl blur-xl opacity-20 group-hover:opacity-40 transition-all duration-500" />
+          {displayedItems
+            .filter((item) => !purchasedItems.has(item.name))
+            .map((item, index) => (
+              <div
+                key={index}
+                className="flex flex-col bg-gray-700 hover:bg-purple-600 p-5 rounded-lg shadow-md cursor-pointer transition-transform transform hover:scale-105 w-full sm:w-[48%] lg:w-[46%] text-center"
+              >
+                <h3 className="text-lg sm:text-xl font-bold mb-4 text-purple-300">
+                  {item.name}
+                </h3>
+                <div className="text-sm mb-4">
+                  Cost:{" "}
+                  <span className="font-semibold">{item.cost} Drachmas</span>
+                  <div className="absolute -inset-2 bg-gradient-to-r from-red-500 via-purple-500 to-blue-500 rounded-2xl blur-xl opacity-20 group-hover:opacity-40 transition-all duration-500" />
+                </div>
+                <button
+                  className="bg-purple-500 hover:bg-purple-600 w-full text-white py-1 rounded-md text-xs disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={purchasedItems.has(item.name)}
+                  onClick={() => {
+                    if (canBuy) handleBooster(item);
+                  }}
+                >
+                  Buy Now
+                </button>
               </div>
-              <button className="bg-purple-400 hover:bg-purple-700 w-full text-white py-3 rounded-md text-sm sm:text-base">
-                Buy Now
-              </button>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
     </div>

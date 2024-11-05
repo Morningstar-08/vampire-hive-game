@@ -13,14 +13,17 @@ const client = new Client([
 export const submitGameResultToMongo = async (gameOver) => {
   try {
     const token = localStorage.getItem("token");
-    const response = await fetch("/api/userStats", {
+    const response = await fetch("/api/update_user", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        isWin: gameOver,
+        wins: gameOver,
+        losses: !gameOver,
+        inventory: ["dummy"],
+        nftCard: ["test"],
       }),
     });
     if (!response.ok) {
@@ -211,12 +214,6 @@ const Card = ({ details, canFlip, onFlip }) => {
 
 const OpponentCards = ({ boosterPurchased }) => {
   const [opponentCards, setOpponentCards] = useState([]);
-  const [player, setPlayer] = useState({
-    health: 100,
-    damage: 10,
-    wins: 0,
-    losses: 0,
-  });
   const [humansDefeated, setHumansDefeated] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [canFlip, setCanFlip] = useState(false);
@@ -225,16 +222,19 @@ const OpponentCards = ({ boosterPurchased }) => {
   const [powerUps, setPowerUps] = useState([]);
   const [activePowerups, setActivePowerups] = useState([]);
   const [gameStarted, setGameStarted] = useState(false);
+  const [player, setPlayer] = useState({
+    health: 100,
+    damage: 10,
+    wins: 0,
+    losses: 0,
+    humansDefeated: 0,
+  });
   let updatedPlayerHealth = player.health;
 
   useEffect(() => {
     initializeCards();
     setGameStarted(true);
   }, []);
-
-  // useEffect(() => {
-  //   initializeCards();
-  // }, []);
 
   const initializeCards = () => {
     const selectedHumans = getRandomElements(HUMANS, 3);
@@ -372,12 +372,12 @@ const OpponentCards = ({ boosterPurchased }) => {
       player.damage = player.damage + 1;
       removePowerup(activePowerups[0]);
     }
+    const newHumansDefeated = humansDefeated + 1;
     setPlayer((prev) => {
       const newHealth = prev.health + card.health;
       console.log("Player healed:", card.health, "New health:", newHealth);
-      return { ...prev, health: newHealth };
+      return { ...prev, health: newHealth, humansDefeated: newHumansDefeated };
     });
-    const newHumansDefeated = humansDefeated + 1;
 
     setHumansDefeated((prev) => prev + 1);
     setCardsToReplace((prev) => [...prev, index]);
@@ -596,7 +596,7 @@ const OpponentCards = ({ boosterPurchased }) => {
     //   {gameOver && <div className="text-red-500 mt-4">Game Over!</div>}
     // </div>
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-purple-900/20 to-black">
-      <div className="max-w-[1440px] mx-auto px-4 py-8">
+      <div className=" mx-auto px-4 py-8">
         {/* Title */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-300 text-transparent bg-clip-text drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">
@@ -620,7 +620,11 @@ const OpponentCards = ({ boosterPurchased }) => {
                     <Card
                       key={index}
                       details={card}
-                      canFlip={canFlip}
+                      canFlip={
+                        canFlip &&
+                        !gameOver &&
+                        (card.health > 0 || card.type !== "damaging")
+                      }
                       onFlip={() => handleFlip(index)}
                     />
                   ))}
@@ -631,26 +635,32 @@ const OpponentCards = ({ boosterPurchased }) => {
         </div>
 
         {/* Player Card Section */}
+        {console.log(activePowerups)}
         <div className="flex justify-center mb-8">
-          <PlayerCard player={player} powerUps={powerUps} />
+          <PlayerCard player={player} powerUps={activePowerups} />
         </div>
 
         {/* Action Button */}
-        <div className="flex justify-center">
-          <button
-            className={`px-8 py-3 rounded-lg font-semibold text-white
-            ${
-              gameOver
-                ? "bg-purple-900/50 cursor-not-allowed"
-                : "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-            }
-            transition-all duration-300 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/50`}
-            onClick={handleNextTurn}
-            disabled={gameOver}
-          >
-            Next Turn
-          </button>
-        </div>
+
+        {!canFlip && !gameOver && (
+          <div className="flex justify-center">
+            <button
+              id="nextTurn"
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors"
+              //   className={`px-8 py-3 rounded-lg font-semibold text-white
+              // ${
+              //   gameOver
+              //     ? "bg-purple-900/50 cursor-not-allowed"
+              //     : "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+              // }
+              // transition-all duration-300 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/50`}
+              onClick={handleNextTurn}
+              disabled={gameOver}
+            >
+              Next Turn
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Custom scrollbar styles */}
