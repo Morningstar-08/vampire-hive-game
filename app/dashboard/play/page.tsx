@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import GameStore from "@/app/components/GameStore";
 import { Coins, Gem, Plus } from "lucide-react";
+import VampireCursor from "@/app/components/VampireCursor";
 
 export default function Play() {
   const { user } = useAuth();
@@ -35,6 +36,7 @@ export default function Play() {
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/playgame.jpg')`,
       }}
     >
+      <VampireCursor />
       {/* Main Game Area */}
       <div className="">
         {/* Currency Display */}

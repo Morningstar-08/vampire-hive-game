@@ -6,18 +6,14 @@ interface NFTMetadata {
   name: string;
   description: string;
   image: string; // URL or data for the image
-  attributes: {
-    trait_type: string;
-    value: string | number;
-  }[];
+  wins: number;
+  losses: number;
 }
 
 // Define the NFT document interface
 export interface NFTDocument extends Document {
   tokenId: string;
   owner: Types.ObjectId; // Reference to the User model
-  wins: number;
-  losses: number;
   metadata: NFTMetadata;
 }
 
@@ -26,18 +22,12 @@ const nftSchema = new Schema<NFTDocument>(
   {
     tokenId: { type: String, required: true, unique: true }, // Unique token identifier
     owner: { type: Schema.Types.ObjectId, ref: "User", required: true }, // Reference to the User model
-    wins: { type: Number, default: 0 },
-    losses: { type: Number, default: 0 },
     metadata: {
       name: { type: String, required: true },
       description: { type: String, required: true },
       image: { type: String, required: true }, // Link to the NFT image
-      attributes: [
-        {
-          trait_type: { type: String, required: true },
-          value: { type: Schema.Types.Mixed, required: true },
-        },
-      ],
+      wins: { type: Number, default: 0 },
+      losses: { type: Number, default: 0 },
     },
   },
   { collection: "nfts" }

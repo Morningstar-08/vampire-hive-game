@@ -11,7 +11,7 @@ const client = new Client([
 ]);
 
 //NOT WORKING
-export const submitGameResultToMongo = async (gameOver) => {
+export const submitGameResultToMongo = async (isWin) => {
   try {
     const token = localStorage.getItem("token");
     const response = await fetch("/api/update_user", {
@@ -21,10 +21,7 @@ export const submitGameResultToMongo = async (gameOver) => {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        wins: gameOver,
-        losses: !gameOver,
-        inventory: ["dummy"],
-        nftCard: ["test"],
+        gameResult: isWin ? "win" : "loss",
       }),
     });
     if (!response.ok) {
@@ -293,7 +290,7 @@ const OpponentCards = ({ boosterPurchased }) => {
     }
 
     try {
-      // await submitGameResultToMongo(isWin);
+      await submitGameResultToMongo(isWin);
       setPlayer((prev) => ({
         ...prev,
         wins: isWin ? (prev.wins || 0) + 1 : prev.wins,

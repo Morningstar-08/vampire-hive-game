@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 
 export interface UserProfile {
   username: string;
-  wins: number;
-  losses: number;
+  total_wins: number;
+  total_losses: number;
   inventory: string[];
   nftCards: mongoose.Types.ObjectId[];
   drachmas: number;
@@ -12,8 +12,8 @@ export interface UserProfile {
 const userSchema = new mongoose.Schema(
   {
     username: String,
-    wins: { type: Number, default: 0 }, // Changed to Number
-    losses: { type: Number, default: 0 }, // Changed to Number
+    total_wins: { type: Number, default: 0 }, // Changed to Number
+    total_losses: { type: Number, default: 0 }, // Changed to Number
     inventory: [String], // Changed to array
     nftCards: [{ type: mongoose.Schema.Types.ObjectId, ref: "NFT" }], // Changed to array
     drachmas: { type: Number, default: 0 },

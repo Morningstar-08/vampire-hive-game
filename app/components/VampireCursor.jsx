@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Droplet, Skull } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { Droplet, Skull } from "lucide-react";
 
 const VampireCursor = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -11,43 +11,49 @@ const VampireCursor = () => {
   useEffect(() => {
     const moveHandler = (e) => {
       setPosition({ x: e.clientX, y: e.clientY });
-      
-      if (Math.random() < 0.3) {  // Increased frequency of blood drops
-        setTrails(prev => [...prev, {
-          x: e.clientX,
-          y: e.clientY,
-          id: Date.now(),
-          size: Math.random() * 0.8 + 1,  // Larger drops
-          rotation: Math.random() * 360
-        }].slice(-12));  // More trails visible
+
+      if (Math.random() < 0.3) {
+        // Increased frequency of blood drops
+        setTrails((prev) =>
+          [
+            ...prev,
+            {
+              x: e.clientX,
+              y: e.clientY,
+              id: Date.now(),
+              size: Math.random() * 0.8 + 1, // Larger drops
+              rotation: Math.random() * 360,
+            },
+          ].slice(-12)
+        ); // More trails visible
       }
     };
 
     const pointerHandler = () => {
       const cursor = window.getComputedStyle(document.documentElement).cursor;
-      setIsPointer(cursor === 'pointer');
-      setShowSkull(cursor === 'pointer');
+      setIsPointer(cursor === "pointer");
+      setShowSkull(cursor === "pointer");
     };
 
     const mouseDownHandler = () => setIsClicking(true);
     const mouseUpHandler = () => setIsClicking(false);
 
-    document.addEventListener('mousemove', moveHandler);
-    document.addEventListener('mouseover', pointerHandler);
-    document.addEventListener('mousedown', mouseDownHandler);
-    document.addEventListener('mouseup', mouseUpHandler);
+    document.addEventListener("mousemove", moveHandler);
+    document.addEventListener("mouseover", pointerHandler);
+    document.addEventListener("mousedown", mouseDownHandler);
+    document.addEventListener("mouseup", mouseUpHandler);
 
     return () => {
-      document.removeEventListener('mousemove', moveHandler);
-      document.removeEventListener('mouseover', pointerHandler);
-      document.removeEventListener('mousedown', mouseDownHandler);
-      document.removeEventListener('mouseup', mouseUpHandler);
+      document.removeEventListener("mousemove", moveHandler);
+      document.removeEventListener("mouseover", pointerHandler);
+      document.removeEventListener("mousedown", mouseDownHandler);
+      document.removeEventListener("mouseup", mouseUpHandler);
     };
   }, []);
 
   useEffect(() => {
     const cleanup = setInterval(() => {
-      setTrails(prev => prev.slice(1));
+      setTrails((prev) => prev.slice(1));
     }, 500); // Reduced from 1000ms to 500ms for faster cleanup
 
     return () => clearInterval(cleanup);
@@ -56,24 +62,24 @@ const VampireCursor = () => {
   return (
     <>
       {/* Main cursor */}
-      <div 
+      <div
         className="fixed pointer-events-none z-[9999]"
         style={{
           left: `${position.x}px`,
           top: `${position.y}px`,
-          transition: 'transform 0.1s ease-out'
+          transition: "transform 0.1s ease-out",
         }}
       >
         <div
           className={`relative transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-300 ${
-            isPointer ? 'scale-150' : 'scale-100'
+            isPointer ? "scale-150" : "scale-100"
           }`}
         >
           {/* Enhanced bat cursor design */}
-          <svg 
-            width="40" 
-            height="40" 
-            viewBox="0 0 40 40" 
+          <svg
+            width="40"
+            height="40"
+            viewBox="0 0 40 40"
             className="animate-hover"
           >
             {/* Larger, more detailed wings */}
@@ -90,8 +96,18 @@ const VampireCursor = () => {
               fill="none"
             />
             {/* Glowing red eyes */}
-            <circle cx="15" cy="12" r="1.5" className="fill-red-500 animate-pulse" />
-            <circle cx="21" cy="12" r="1.5" className="fill-red-500 animate-pulse" />
+            <circle
+              cx="15"
+              cy="12"
+              r="1.5"
+              className="fill-red-500 animate-pulse"
+            />
+            <circle
+              cx="21"
+              cy="12"
+              r="1.5"
+              className="fill-red-500 animate-pulse"
+            />
             {/* Sharp fangs */}
             <path
               d="M17 13L18 15L19 13M16 13L17 15M19 13L20 15"
@@ -125,11 +141,11 @@ const VampireCursor = () => {
           style={{
             left: `${trail.x}px`,
             top: `${trail.y}px`,
-            opacity: 0.9 - (index * 0.1), // Increased opacity fade
-            transform: `translate(-50%, -50%) scale(${trail.size}) rotate(${trail.rotation}deg)`
+            opacity: 0.9 - index * 0.1, // Increased opacity fade
+            transform: `translate(-50%, -50%) scale(${trail.size}) rotate(${trail.rotation}deg)`,
           }}
         >
-          <Droplet 
+          <Droplet
             className="animate-bounce drop-shadow-lg shadow-red-800"
             fill="rgba(153, 27, 27, 0.8)"
           />
@@ -153,7 +169,8 @@ const VampireCursor = () => {
         }
 
         @keyframes hover {
-          0%, 100% {
+          0%,
+          100% {
             transform: translateY(0px) rotate(-3deg);
           }
           50% {
@@ -162,7 +179,8 @@ const VampireCursor = () => {
         }
 
         @keyframes float {
-          0%, 100% {
+          0%,
+          100% {
             transform: translateY(0) rotate(0deg);
           }
           50% {
@@ -195,7 +213,8 @@ const VampireCursor = () => {
           animation: bloodDrip 1.2s ease-in forwards; /* Reduced from 2s to 1.2s */
         }
 
-        body, * {
+        body,
+        * {
           cursor: none !important;
         }
       `}</style>

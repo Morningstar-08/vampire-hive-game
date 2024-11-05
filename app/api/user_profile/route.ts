@@ -23,8 +23,8 @@ export async function GET(req: Request) {
       // If user does not exist, create a new one with default values
       user = new User({
         username,
-        wins: 0,
-        losses: 0,
+        total_wins: 0,
+        total_losses: 0,
         inventory: [],
         nftCards: [],
         drachmas: 0,

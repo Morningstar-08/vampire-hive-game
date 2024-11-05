@@ -17,24 +17,23 @@ export async function POST(req: Request) {
     const username = decoded.username;
 
     // Parse the request body
-    const { wins, losses, inventory, nftCards } = await req.json();
+    const { gameResult } = await req.json();
+    console.log(gameResult);
 
     // Connect to MongoDB
     await connectMongo();
 
     // Find and update the user
-    const user = await User.findOneAndUpdate(
-      { username },
-      {
-        $set: {
-          wins: wins ?? undefined, // Only update if provided
-          losses: losses ?? undefined, // Only update if provided
-          inventory: inventory ?? undefined, // Only update if provided
-          nftCards: nftCards ?? undefined, // Only update if provided
-        },
+    const updateFields = {
+      $inc: {
+        total_wins: gameResult === "win" ? 1 : 0,
+        total_losses: gameResult === "loss" ? 1 : 0,
       },
-      { new: true } // Return the updated document
-    );
+    };
+
+    const user = await User.findOneAndUpdate({ username }, updateFields, {
+      new: true,
+    });
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
