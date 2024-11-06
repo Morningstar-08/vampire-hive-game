@@ -621,8 +621,89 @@ const OpponentCards = ({ boosterPurchased, nftCard }) => {
 
     //   {gameOver && <div className="text-red-500 mt-4">Game Over!</div>}
     // </div>
-    <div className="">
-      <div className="flex flex-col gap-10 m-8">
+
+    //Latest code block
+    // <div className="">
+    //   <div className="flex flex-col gap-10 m-8">
+    //     {/* Title */}
+    //     <div className="text-center mb-8">
+    //       <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-300 text-transparent bg-clip-text drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">
+    //         Opponent Cards
+    //       </h1>
+    //     </div>
+
+    //     {/* Opponent Cards Row */}
+    //     <div className="mb-8">
+    //       <div className="relative">
+    //         {/* Background glow effect */}
+    //         <div className="absolute inset-0 bg-purple-500/5 blur-3xl rounded-3xl" />
+
+    //         {/* Cards container */}
+    //         <div className="relative backdrop-blur-sm rounded-3xl p-3 border border-purple-500/10">
+    //           {/* Scrollable container */}
+    //           <div className="overflow-x-auto pb-2 hide-scrollbar">
+    //             {/* Fixed-width container to ensure cards stay in one row */}
+    //             <div className="flex gap-2 min-w-min mx-auto justify-center">
+    //               {opponentCards.map((card, index) => (
+    //                 <Card
+    //                   key={index}
+    //                   details={card}
+    //                   canFlip={
+    //                     canFlip &&
+    //                     !gameOver &&
+    //                     (card.health > 0 || card.type !== "damaging")
+    //                   }
+    //                   onFlip={() => handleFlip(index)}
+    //                 />
+    //               ))}
+    //             </div>
+    //           </div>
+    //         </div>
+    //       </div>
+    //     </div>
+
+    //     {/* Player Card Section */}
+    //     <div className="flex justify-center mb-8">
+    //       <PlayerCard player={player} powerUps={activePowerups} />
+    //     </div>
+
+    //     {/* Action Button */}
+
+    //     {!canFlip && !gameOver && (
+    //       <div className="flex justify-center">
+    //         <button
+    //           id="nextTurn"
+    //           className="bg-purple-500 text-white px-9 py-4 rounded hover:bg-purple-700 transition-colors"
+    //           //   className={`px-8 py-3 rounded-lg font-semibold text-white
+    //           // ${
+    //           //   gameOver
+    //           //     ? "bg-purple-900/50 cursor-not-allowed"
+    //           //     : "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+    //           // }
+    //           // transition-all duration-300 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/50`}
+    //           onClick={handleNextTurn}
+    //           disabled={gameOver}
+    //         >
+    //           Next Turn
+    //         </button>
+    //       </div>
+    //     )}
+    //   </div>
+
+    //   {/* Custom scrollbar styles */}
+    //   <style jsx global>{`
+    //     .hide-scrollbar {
+    //       scrollbar-width: none;
+    //       -ms-overflow-style: none;
+    //     }
+    //     .hide-scrollbar::-webkit-scrollbar {
+    //       display: none;
+    //     }
+    //   `}</style>
+    // </div>
+
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-purple-900/20 to-black">
+      <div className="mx-auto px-4 py-8">
         {/* Title */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-300 text-transparent bg-clip-text drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">
@@ -641,7 +722,7 @@ const OpponentCards = ({ boosterPurchased, nftCard }) => {
               {/* Scrollable container */}
               <div className="overflow-x-auto pb-2 hide-scrollbar">
                 {/* Fixed-width container to ensure cards stay in one row */}
-                <div className="flex gap-2 min-w-min mx-auto justify-center">
+                <div className="flex flex-wrap gap-2 min-w-min mx-auto justify-center">
                   {opponentCards.map((card, index) => (
                     <Card
                       key={index}
