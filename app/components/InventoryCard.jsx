@@ -55,37 +55,37 @@
 
 // export default InventoryCard;
 
-const InventoryCard = () => {
-  const inventoryItems = [
-    {
-      id: 1,
-      name: "Magic Sword",
-      rarity: "Rare",
-      power: 150,
-      description: "A legendary blade infused with ancient magic",
-    },
-    {
-      id: 2,
-      name: "Shield",
-      rarity: "Common",
-      power: 100,
-      description: "Standard protection against enemy attacks",
-    },
-    {
-      id: 3,
-      name: "Health Potion",
-      rarity: "Uncommon",
-      power: 75,
-      description: "Restores vital energy in combat",
-    },
-    {
-      id: 4,
-      name: "Health Potion",
-      rarity: "Uncommon",
-      power: 75,
-      description: "Restores vital energy in combat",
-    },
-  ];
+const InventoryCard = ({ inventory }) => {
+  // const inventoryItems = [
+  //   {
+  //     id: 1,
+  //     name: "Magic Sword",
+  //     rarity: "Rare",
+  //     power: 150,
+  //     description: "A legendary blade infused with ancient magic",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Shield",
+  //     rarity: "Common",
+  //     power: 100,
+  //     description: "Standard protection against enemy attacks",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Health Potion",
+  //     rarity: "Uncommon",
+  //     power: 75,
+  //     description: "Restores vital energy in combat",
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "Health Potion",
+  //     rarity: "Uncommon",
+  //     power: 75,
+  //     description: "Restores vital energy in combat",
+  //   },
+  // ];
 
   return (
     <div className="relative max-w-4xl m-8 h-auto">
@@ -100,7 +100,7 @@ const InventoryCard = () => {
           Your Inventory
         </h2>
         <div className="space-y-3">
-          {inventoryItems.map((item) => (
+          {inventory.map((item) => (
             <div
               key={item.id}
               className="relative group cursor-pointer transition-all duration-300"
@@ -112,7 +112,7 @@ const InventoryCard = () => {
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="text-sm text-white font-medium">
-                        {item.name}
+                        {item}
                       </span>
                       <span
                         className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${

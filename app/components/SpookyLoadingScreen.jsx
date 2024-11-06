@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 const EnhancedHorrorAnimation = () => {
-  const [isLoaded, setIsLoaded] = useState(false);
+  // const [isLoaded, setIsLoaded] = useState(false);
   const [bloodProgress, setBloodProgress] = useState(0);
 
   useEffect(() => {
@@ -18,8 +18,16 @@ const EnhancedHorrorAnimation = () => {
       {/* Spooky Background Elements */}
       <div className="absolute inset-0">
         {/* Animated Spider Webs in Corners */}
-        {['top-0 left-0', 'top-0 right-0', 'bottom-0 left-0', 'bottom-0 right-0'].map((position, i) => (
-          <div key={`web-${i}`} className={`absolute ${position} w-32 h-32 opacity-30 animate-web-sway`}>
+        {[
+          "top-0 left-0",
+          "top-0 right-0",
+          "bottom-0 left-0",
+          "bottom-0 right-0",
+        ].map((position, i) => (
+          <div
+            key={`web-${i}`}
+            className={`absolute ${position} w-32 h-32 opacity-30 animate-web-sway`}
+          >
             <div className="absolute inset-0 border-t border-l border-gray-500 rounded-tl-full transform rotate-45" />
             <div className="absolute inset-0 border-t border-l border-gray-500 rounded-tl-full transform rotate-[60deg]" />
             <div className="absolute inset-0 border-t border-l border-gray-500 rounded-tl-full transform rotate-[75deg]" />
@@ -44,7 +52,7 @@ const EnhancedHorrorAnimation = () => {
               <div
                 className="absolute w-full h-full bg-black"
                 style={{
-                  clipPath: 'polygon(0% 50%, 50% 0%, 100% 50%, 50% 100%)',
+                  clipPath: "polygon(0% 50%, 50% 0%, 100% 50%, 50% 100%)",
                 }}
               />
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -74,7 +82,8 @@ const EnhancedHorrorAnimation = () => {
               <div
                 className="w-full h-6 bg-gray-200/20 animate-ghost-wave"
                 style={{
-                  clipPath: 'polygon(0% 0%, 25% 100%, 50% 0%, 75% 100%, 100% 0%)',
+                  clipPath:
+                    "polygon(0% 0%, 25% 100%, 50% 0%, 75% 100%, 100% 0%)",
                 }}
               />
             </div>
@@ -112,7 +121,7 @@ const EnhancedHorrorAnimation = () => {
       <div className="relative z-30 text-center flex flex-col items-center justify-center min-h-screen">
         <div className="mb-16">
           <h1 className="text-7xl font-bold text-red-800 mb-4 animate-horror-pulse tracking-widest">
-            Coffin's Oath
+            Coffin&apos;s Oath
           </h1>
           <p className="text-gray-400 animate-pulse text-xl font-gothic mb-6">
             The Night Awakens...

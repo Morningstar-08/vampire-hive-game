@@ -58,7 +58,7 @@ const PlayerCard = ({ player, powerUps }) => {
           <div className="relative h-24 rounded-xl overflow-hidden mb-2">
             <div className="absolute inset-0 bg-gradient-to-t from-purple-900 to-transparent opacity-60" />
             <img
-              src="/api/placeholder/320/192"
+              src="/nft.jpeg"
               alt="Character"
               className="w-full h-full object-cover"
             />

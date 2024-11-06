@@ -183,7 +183,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="mt-8 pt-8 border-t border-red-900/30 text-center">
-                  <p>&copy; 2024 Coffin's Oath. All Rights Reserved.</p>
+                  <p>&copy; 2024 Coffin&apos;s Oath. All Rights Reserved.</p>
                 </div>
               </div>
             </footer>

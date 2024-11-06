@@ -16,12 +16,14 @@ export default function Navbar(props) {
         <img
           src="/logo.jpg" // Replace with your logo path
           alt="Logo"
+          width={48}
+          height={48}
           className="h-12 mr-3"
         />
         {/* Conditionally render the title based on mobile dropdown state */}
         {/* This should hide the title when the dropdown is open */}
         <span className={`text-white text-2xl ${isOpen ? "hidden" : ""}`}>
-          The Coffin's Oath
+          The Coffin&apos;s Oath
         </span>
       </div>
 

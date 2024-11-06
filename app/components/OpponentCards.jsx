@@ -1,14 +1,14 @@
 // "use client";
 import React, { useEffect, useState } from "react";
-import { Client, PrivateKey } from "@hiveio/dhive";
+import { Client } from "@hiveio/dhive";
 import PlayerCard from "./PlayerCard";
 import { useAuth } from "../providers/AuthProvider";
 // Create a client instance
-const client = new Client([
-  "https://api.hive.blog",
-  "https://api.hivekings.com",
-  "https://api.openhive.network",
-]);
+// const client = new Client([
+//   "https://api.hive.blog",
+//   "https://api.hivekings.com",
+//   "https://api.openhive.network",
+// ]);
 
 //NOT WORKING
 export const submitGameResultToMongo = async (isWin) => {
@@ -155,28 +155,6 @@ const getRandomElements = (array, count) => {
   return shuffled.slice(0, count);
 };
 
-const OpponentCard = ({ details, canFlip, onFlip }) => {
-  return (
-    <div
-      className={`border p-2 rounded h-32 w-24 ${
-        details.flipped ? "bg-red-600" : "bg-red-800"
-      } cursor-pointer`}
-      onClick={() => canFlip && onFlip()}
-    >
-      {details.flipped ? (
-        <div className="text-xs">
-          <p className="font-bold">{details.name}</p>
-          <p>Health: {details.health}</p>
-          {details.damage && <p>Damage: {details.damage}</p>}
-          {details.heal && <p>Heal: {details.heal}</p>}
-        </div>
-      ) : (
-        <p className="text-center">?</p>
-      )}
-    </div>
-  );
-};
-
 const Card = ({ details, canFlip, onFlip }) => {
   return (
     <div
@@ -241,13 +219,13 @@ const Card = ({ details, canFlip, onFlip }) => {
   );
 };
 
-const OpponentCards = ({ boosterPurchased, nftCard }) => {
+const OpponentCards = ({ boosterPurchased }) => {
   const { user } = useAuth();
   const [opponentCards, setOpponentCards] = useState([]);
   const [humansDefeated, setHumansDefeated] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [canFlip, setCanFlip] = useState(false);
-  const [lastFlippedIndex, setLastFlippedIndex] = useState(null);
+  // const [lastFlippedIndex, setLastFlippedIndex] = useState(null);
   const [cardsToReplace, setCardsToReplace] = useState([]);
   const [powerUps, setPowerUps] = useState([]);
   const [activePowerups, setActivePowerups] = useState([]);

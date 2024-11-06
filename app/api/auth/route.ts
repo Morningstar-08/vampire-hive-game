@@ -1,20 +1,20 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 
-const verifyHiveKeychainSignature = (
-  username: string,
-  signature: string
-): boolean => {
-  // TODO: Implement actual Hive API signature verification
-  // For now, assume the signature is valid
-  return true;
-};
+// const verifyHiveKeychainSignature = (
+//   username: string,
+//   signature: string
+// ): boolean => {
+//   // TODO: Implement actual Hive API signature verification
+//   // For now, assume the signature is valid
+//   return true;
+// };
 
 export async function POST(req: Request) {
   const { username, signature } = await req.json();
-  const isSignatureValid = verifyHiveKeychainSignature(username, signature);
+  // const isSignatureValid = verifyHiveKeychainSignature(username, signature);
 
-  if (isSignatureValid) {
+  if (true) {
     const token = jwt.sign({ username }, process.env.JWT_SECRET as string, {
       expiresIn: "1h",
     });
