@@ -330,7 +330,7 @@ const OpponentCards = ({ boosterPurchased }) => {
     const updatedCards = [...opponentCards];
     updatedCards[index] = { ...card, flipped: true };
     setOpponentCards(updatedCards);
-    lastFlippedIndex;
+    lastFlippedIndex !== null && setCanFlip(false);
     setLastFlippedIndex(index);
 
     console.log("Card flipped:", card);
