@@ -148,7 +148,9 @@ export default function Home() {
               <div className="max-w-6xl mx-auto">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   <div className="text-center md:text-left">
-                    <h3 className="text-xl font-gothic mb-4">Coffin's Oath</h3>
+                    <h3 className="text-xl font-gothic mb-4">
+                      Coffin&apos;s Oath
+                    </h3>
                     <p className="text-gray-400">
                       Where darkness meets strategy
                     </p>

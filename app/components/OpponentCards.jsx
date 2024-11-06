@@ -1,6 +1,6 @@
 // "use client";
 import React, { useEffect, useState } from "react";
-import { Client } from "@hiveio/dhive";
+// import { Client } from "@hiveio/dhive";
 import PlayerCard from "./PlayerCard";
 import { useAuth } from "../providers/AuthProvider";
 // Create a client instance

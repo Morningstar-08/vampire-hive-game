@@ -36,7 +36,7 @@ export default function Dashboard() {
     if (!user) {
       router.push("/");
     }
-  }, [user]);
+  });
 
   if (!user) {
     return <p>Loading...</p>;

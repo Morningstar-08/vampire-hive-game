@@ -5,7 +5,7 @@ const EnhancedHorrorAnimation = () => {
   const [bloodProgress, setBloodProgress] = useState(0);
 
   useEffect(() => {
-    setIsLoaded(true);
+    // setIsLoaded(true);
     // Loading bar only
     const timer = setInterval(() => {
       setBloodProgress((prev) => (prev < 100 ? prev + 1 : prev));

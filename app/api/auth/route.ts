@@ -11,7 +11,7 @@ import jwt from "jsonwebtoken";
 // };
 
 export async function POST(req: Request) {
-  const { username, signature } = await req.json();
+  const { username } = await req.json();
   // const isSignatureValid = verifyHiveKeychainSignature(username, signature);
 
   if (true) {

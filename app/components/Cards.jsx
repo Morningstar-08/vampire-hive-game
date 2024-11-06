@@ -49,7 +49,7 @@ export default function Cards() {
               style={{ backgroundColor: "rgb(55, 65, 81)" }} // Updated card background color
               className="p-4 rounded-lg text-center"
             >
-              <Image
+              <img
                 src={card.image}
                 alt={card.name}
                 className="w-full h-32 object-cover rounded-lg mb-4"
