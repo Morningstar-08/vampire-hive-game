@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import GameStore from "@/app/components/GameStore";
 import { Coins, Gem, Plus } from "lucide-react";
 import VampireCursor from "@/app/components/VampireCursor";
+import EnhancedHorrorAnimation from "@/app/components/SpookyLoadingScreen";
 
 export default function Play() {
   const { user } = useAuth();
@@ -26,7 +27,11 @@ export default function Play() {
   };
 
   if (!user) {
-    return <p>Loading...</p>;
+    return (
+      <div>
+        <EnhancedHorrorAnimation />
+      </div>
+    );
   }
 
   return (

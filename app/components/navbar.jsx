@@ -14,7 +14,7 @@ export default function Navbar(props) {
       {/* Logo Section */}
       <div className="logo flex items-center">
         <img
-          src="/logo.png" // Replace with your logo path
+          src="/logo.jpg" // Replace with your logo path
           alt="Logo"
           className="h-12 mr-3"
         />

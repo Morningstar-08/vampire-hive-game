@@ -7,6 +7,7 @@ import ShopCard from "../components/ShopCard";
 import GameHistory from "../components/GameHistory";
 import NFTCard from "../components/NFTCard";
 import VampireCursor from "../components/VampireCursor";
+import EnhancedHorrorAnimation from "../components/SpookyLoadingScreen";
 
 const UserStats = ({ username, hiveCoins, drachmas }) => (
   <div className="max-w-4xl m-8 relative bg-gray-900/40 backdrop-blur-sm rounded-xl p-6 border border-purple-500/20">
@@ -75,7 +76,13 @@ export default function Dashboard() {
     fetchUser();
   }, [user]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return (
+      <div>
+        {" "}
+        <EnhancedHorrorAnimation />{" "}
+      </div>
+    );
 
   const mockData = {
     hiveCoins: 1000,
