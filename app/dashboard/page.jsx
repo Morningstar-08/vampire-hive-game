@@ -32,49 +32,53 @@ export default function Dashboard() {
   const { user } = useAuth();
   const router = useRouter();
 
-  useEffect(() => {
-    if (!user) {
-      router.push("/");
-    }
-  });
+  // useEffect(() => {
+  //   if (!user) {
+  //     router.push("/");
+  //   }
+  // });
 
-  if (!user) {
-    return <p>Loading...</p>;
-  }
+  // if (!user) {
+  //   return <p>Loading...</p>;
+  // }
 
   const [userProfile, setUserProfile] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState();
 
-  const fetchUser = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setError("Not authenticated");
-        setLoading(false);
-        return;
-      }
-      const res = await fetch("/api/user_profile", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      const data = await res.json();
-      setUserProfile(data);
-      setError(null);
-      setLoading(false);
-    } catch (err) {
-      console.error("Error fetching user profile:", err, error);
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    if (!user) {
+      router.push("/");
+      return;
+    }
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setError("Not authenticated");
+          setLoading(false);
+          return;
+        }
+        const res = await fetch("/api/user_profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const data = await res.json();
+        setUserProfile(data);
+        setError(null);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching user profile:", err, error);
+        setLoading(false);
+      }
+    };
+
     fetchUser();
-  }, [user]);
+  }, [user, router]);
 
   if (loading)
     return (

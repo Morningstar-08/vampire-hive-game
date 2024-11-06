@@ -100,9 +100,9 @@ const InventoryCard = ({ inventory }) => {
           Your Inventory
         </h2>
         <div className="space-y-3">
-          {inventory.map((item) => (
+          {inventory.map((item, idx) => (
             <div
-              key={item.id}
+              key={idx}
               className="relative group cursor-pointer transition-all duration-300"
             >
               {/* Item background with hover effect */}
