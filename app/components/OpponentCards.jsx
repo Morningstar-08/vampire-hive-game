@@ -225,7 +225,7 @@ const OpponentCards = ({ boosterPurchased }) => {
   const [humansDefeated, setHumansDefeated] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [canFlip, setCanFlip] = useState(false);
-  const [lastFlippedIndex, setLastFlippedIndex] = useState(null);
+  // const [lastFlippedIndex, setLastFlippedIndex] = useState(null);
   const [cardsToReplace, setCardsToReplace] = useState([]);
   const [powerUps, setPowerUps] = useState([]);
   const [activePowerups, setActivePowerups] = useState([]);
@@ -330,10 +330,11 @@ const OpponentCards = ({ boosterPurchased }) => {
     const updatedCards = [...opponentCards];
     updatedCards[index] = { ...card, flipped: true };
     setOpponentCards(updatedCards);
-    if (lastFlippedIndex !== null) {
-      setCanFlip(false);
-    }
-    setLastFlippedIndex(index);
+    // if (lastFlippedIndex !== null) {
+    //   setCanFlip(false);
+    // }
+
+    // setLastFlippedIndex(index);
 
     console.log("Card flipped:", card);
 
@@ -526,7 +527,7 @@ const OpponentCards = ({ boosterPurchased }) => {
     replaceCards();
     shuffleDeck();
     setCanFlip(true);
-    setLastFlippedIndex(null);
+    // setLastFlippedIndex(null);
     console.log("Next turn started");
   };
 
