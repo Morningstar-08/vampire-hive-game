@@ -120,7 +120,7 @@ const GameStore = ({ drachmas, onDrachmasChange }) => {
   };
 
   return (
-    <div className="flex">
+    <div className="flex h-full bg-gradient-to-b from-gray-900 via-purple-900/20 to-black">
       {/* Left side - OpponentCards */}
       <div className="h-full w-full">
         <OpponentCards boosterPurchased={boosterPurchased} />

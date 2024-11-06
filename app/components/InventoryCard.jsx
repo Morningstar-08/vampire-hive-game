@@ -6,9 +6,9 @@ const InventoryCard = ({ inventory }) => {
       </h2>
       <div className="space-y-3">
         {inventory.length > 0 ? (
-          inventory.map((item) => (
+          inventory.map((item, idx) => (
             <div
-              key={item.id}
+              key={idx}
               className="bg-gradient-to-r from-gray-800/50 to-gray-900/50 p-3 rounded-lg border border-white/5 hover:border-white/20 transition-all"
             >
               {/* Dummy Image */}

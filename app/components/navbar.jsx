@@ -1,11 +1,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { FiChevronDown } from "react-icons/fi";
-import { useAuth } from "../providers/AuthProvider";
 
 export default function Navbar(props) {
-  const { user, login } = useAuth();
-
   const [isOpen, setIsOpen] = useState(false);
   const toggleDropdown = () => setIsOpen(!isOpen);
   const handleOptionClick = () => {
@@ -24,7 +21,7 @@ export default function Navbar(props) {
         {/* Conditionally render the title based on mobile dropdown state */}
         {/* This should hide the title when the dropdown is open */}
         <span className={`text-white text-2xl ${isOpen ? "hidden" : ""}`}>
-          Vampire Card Game
+          The Coffin's Oath
         </span>
       </div>
 

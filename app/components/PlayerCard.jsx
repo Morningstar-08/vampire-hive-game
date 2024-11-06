@@ -94,7 +94,7 @@ const PlayerCard = ({ player, powerUps }) => {
             <h3 className="text-xs font-semibold text-purple-300 mb-1">
               Active Power-ups
             </h3>
-            <div className="text-xs text-purple-400">
+            <div className="text-sm text-purple-400">
               {powerUps.length > 0 ? (
                 <div className="flex flex-wrap gap-1">
                   {powerUps.map((powerUp, index) => (

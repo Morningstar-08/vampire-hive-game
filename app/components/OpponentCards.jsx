@@ -241,7 +241,7 @@ const Card = ({ details, canFlip, onFlip }) => {
   );
 };
 
-const OpponentCards = ({ boosterPurchased }) => {
+const OpponentCards = ({ boosterPurchased, nftCard }) => {
   const { user } = useAuth();
   const [opponentCards, setOpponentCards] = useState([]);
   const [humansDefeated, setHumansDefeated] = useState(0);
@@ -621,8 +621,8 @@ const OpponentCards = ({ boosterPurchased }) => {
 
     //   {gameOver && <div className="text-red-500 mt-4">Game Over!</div>}
     // </div>
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-purple-900/20 to-black">
-      <div className=" mx-auto px-4 py-8">
+    <div className="">
+      <div className="flex flex-col gap-10 m-8">
         {/* Title */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-300 text-transparent bg-clip-text drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">

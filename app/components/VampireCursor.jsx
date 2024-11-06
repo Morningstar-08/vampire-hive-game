@@ -136,7 +136,7 @@ const VampireCursor = () => {
       {/* Enhanced blood trails */}
       {trails.map((trail, index) => (
         <div
-          key={trail.id}
+          key={index}
           className="fixed pointer-events-none z-[9998] text-red-800 animate-bloodDrip"
           style={{
             left: `${trail.x}px`,
